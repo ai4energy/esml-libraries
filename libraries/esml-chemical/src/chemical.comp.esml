@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="Chemical">
+  <use library="cn.ai4energy.esml:esml-units:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-connectors:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-properties:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-fluid:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-thermal:0.1.0"/>
+  <modelTypes>
+    <modelType name="CSTR" discipline="chemical">
+      <ports>
+        <port name="feed" portType="FluidPort"/>
+        <port name="product" portType="FluidPort"/>
+      </ports>
+      <parameters>
+        <parameter name="V" type="real" default="1.0"/>
+        <parameter name="k" type="real" default="0.1"/>
+        <parameter name="rho" type="real" default="998.0"/>
+      </parameters>
+      <variables><variable name="X" type="real" role="algebraic"/></variables>
+      <equations>
+        <equation>product.m = feed.m</equation>
+        <equation>X = k * V / (feed.m / rho + k * V)</equation>
+      </equations>
+    </modelType>
+    <modelType name="Flash" discipline="chemical">
+      <ports>
+        <port name="feed" portType="FluidPort"/>
+        <port name="vapor" portType="FluidPort"/>
+        <port name="liquid" portType="FluidPort"/>
+      </ports>
+      <parameters>
+        <parameter name="P" type="real" default="100000.0"/>
+        <parameter name="T" type="real" default="350.0"/>
+      </parameters>
+      <equations>
+        <equation>feed.m = vapor.m + liquid.m</equation>
+        <equation>vapor.p = P</equation>
+        <equation>liquid.p = P</equation>
+      </equations>
+    </modelType>
+    <modelType name="DistillationColumn" discipline="chemical">
+      <ports>
+        <port name="feed" portType="FluidPort"/>
+        <port name="top" portType="FluidPort"/>
+        <port name="bottom" portType="FluidPort"/>
+      </ports>
+      <parameters>
+        <parameter name="N" type="real" default="10.0"/>
+        <parameter name="R" type="real" default="2.0"/>
+      </parameters>
+      <equations>
+        <equation>feed.m = top.m + bottom.m</equation>
+        <equation>top.p = feed.p</equation>
+        <equation>bottom.p = feed.p</equation>
+      </equations>
+    </modelType>
+  </modelTypes>
+</esml>

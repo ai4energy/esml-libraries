@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="Control">
+  <use library="cn.ai4energy.esml:esml-units:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-connectors:0.1.0"/>
+  <modelTypes>
+    <modelType name="PID" discipline="control">
+      <ports>
+        <port name="sp" portType="SignalPort"/>
+        <port name="pv" portType="SignalPort"/>
+        <port name="u" portType="SignalPort"/>
+      </ports>
+      <parameters>
+        <parameter name="Kp" type="real" default="2.0"/>
+        <parameter name="Ti" type="real" default="5.0"/>
+        <parameter name="Td" type="real" default="0.5"/>
+        <parameter name="Ts" type="real" default="0.05"/>
+      </parameters>
+      <equations>
+        <equation>u.y = Kp * (sp.y - pv.y)</equation>
+      </equations>
+    </modelType>
+    <modelType name="Limiter" discipline="control">
+      <ports>
+        <port name="in" portType="SignalPort"/>
+        <port name="out" portType="SignalPort"/>
+      </ports>
+      <parameters>
+        <parameter name="min" type="real" default="0.0"/>
+        <parameter name="max" type="real" default="1.0"/>
+      </parameters>
+      <equations><equation>out.y = min(max(in.y, min), max)</equation></equations>
+    </modelType>
+    <modelType name="SignalSource" discipline="control">
+      <ports><port name="out" portType="SignalPort"/></ports>
+      <parameters><parameter name="value" type="real" default="1.0"/></parameters>
+      <equations><equation>out.y = value</equation></equations>
+    </modelType>
+  </modelTypes>
+</esml>

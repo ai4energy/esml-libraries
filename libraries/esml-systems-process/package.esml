@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package groupId="cn.ai4energy.esml" artifactId="esml-systems-process" version="0.1.0">
+  <namespace>Systems.Process</namespace>
+  <description>化工流程。</description>
+  <license>MIT</license>
+  <dependencies>
+    <dependency coordinate="cn.ai4energy.esml:esml-units:0.1.0"/>
+    <dependency coordinate="cn.ai4energy.esml:esml-connectors:0.1.0"/>
+    <dependency coordinate="cn.ai4energy.esml:esml-chemical:0.1.0"/>
+    <dependency coordinate="cn.ai4energy.esml:esml-fluid:0.1.0"/>
+  </dependencies>
+  <exports><export path="src/systems-process.comp.esml"/></exports>
+</package>

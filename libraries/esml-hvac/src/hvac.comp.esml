@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="HVAC">
+  <use library="cn.ai4energy.esml:esml-units:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-connectors:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-thermal:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-fluid:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-electrical:0.1.0"/>
+  <modelTypes>
+    <modelType name="HeatPump" discipline="hvac">
+      <ports>
+        <port name="power" portType="ElectricalPin"/>
+        <port name="cold" portType="ThermalPort"/>
+        <port name="hot" portType="ThermalPort"/>
+      </ports>
+      <parameters><parameter name="COP" type="real" default="3.0"/></parameters>
+      <equations>
+        <equation>hot.Q = COP * power.P</equation>
+        <equation>cold.Q = hot.Q - power.P</equation>
+      </equations>
+    </modelType>
+    <modelType name="Chiller" discipline="hvac">
+      <ports>
+        <port name="power" portType="ElectricalPin"/>
+        <port name="cold" portType="ThermalPort"/>
+        <port name="hot" portType="ThermalPort"/>
+      </ports>
+      <parameters><parameter name="COP" type="real" default="4.0"/></parameters>
+      <equations>
+        <equation>cold.Q = COP * power.P</equation>
+        <equation>hot.Q = cold.Q + power.P</equation>
+      </equations>
+    </modelType>
+    <modelType name="FanCoil" discipline="hvac">
+      <ports>
+        <port name="water_in" portType="FluidPort"/>
+        <port name="water_out" portType="FluidPort"/>
+        <port name="air" portType="ThermalPort"/>
+      </ports>
+      <parameters>
+        <parameter name="cp" type="real" default="4180.0"/>
+        <parameter name="eta" type="real" default="0.98"/>
+      </parameters>
+      <equations>
+        <equation>water_in.m = water_out.m</equation>
+        <equation>air.Q = eta * water_in.m * cp * (water_in.T - water_out.T)</equation>
+      </equations>
+    </modelType>
+  </modelTypes>
+</esml>

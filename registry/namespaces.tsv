@@ -3,3 +3,14 @@ Units	cn.ai4energy.esml	esml-units	reserved
 Connectors	cn.ai4energy.esml	esml-connectors	reserved
 Thermal	cn.ai4energy.esml	esml-thermal	reserved
 Examples.Thermal	cn.ai4energy.esml	esml-examples-thermal	reserved
+Properties	cn.ai4energy.esml	esml-properties	reserved
+Fluid	cn.ai4energy.esml	esml-fluid	reserved
+Electrical	cn.ai4energy.esml	esml-electrical	reserved
+Control	cn.ai4energy.esml	esml-control	reserved
+Renewable	cn.ai4energy.esml	esml-renewable	reserved
+Storage	cn.ai4energy.esml	esml-storage	reserved
+HVAC	cn.ai4energy.esml	esml-hvac	reserved
+Chemical	cn.ai4energy.esml	esml-chemical	reserved
+Systems.Energy	cn.ai4energy.esml	esml-systems-energy	reserved
+Systems.HVAC	cn.ai4energy.esml	esml-systems-hvac	reserved
+Systems.Process	cn.ai4energy.esml	esml-systems-process	reserved

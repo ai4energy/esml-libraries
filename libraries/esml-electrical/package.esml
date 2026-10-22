@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package groupId="cn.ai4energy.esml" artifactId="esml-electrical" version="0.1.0">
+  <namespace>Electrical</namespace>
+  <description>线路、变压器、电机、电源。</description>
+  <license>MIT</license>
+  <dependencies>
+    <dependency coordinate="cn.ai4energy.esml:esml-units:0.1.0"/>
+    <dependency coordinate="cn.ai4energy.esml:esml-connectors:0.1.0"/>
+  </dependencies>
+  <exports><export path="src/electrical.comp.esml"/></exports>
+</package>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="Systems.Process">
+  <use library="cn.ai4energy.esml:esml-units:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-connectors:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-chemical:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-fluid:0.1.0"/>
+  <modelTypes>
+    <modelType name="ProcessTrain" discipline="systems">
+      <ports>
+        <port name="feed" portType="FluidPort"/>
+        <port name="product" portType="FluidPort"/>
+      </ports>
+      <equations>
+        <equation>feed.m = product.m</equation>
+        <equation>feed.p = product.p</equation>
+      </equations>
+    </modelType>
+  </modelTypes>
+</esml>

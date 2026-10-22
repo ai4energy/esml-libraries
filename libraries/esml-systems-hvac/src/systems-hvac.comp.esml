@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="Systems.HVAC">
+  <use library="cn.ai4energy.esml:esml-units:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-connectors:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-hvac:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-thermal:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-fluid:0.1.0"/>
+  <modelTypes>
+    <modelType name="HeatingLoop" discipline="systems">
+      <ports>
+        <port name="source" portType="ThermalPort"/>
+        <port name="load" portType="ThermalPort"/>
+      </ports>
+      <equations>
+        <equation>source.Q = load.Q</equation>
+        <equation>source.T = load.T</equation>
+      </equations>
+    </modelType>
+  </modelTypes>
+</esml>

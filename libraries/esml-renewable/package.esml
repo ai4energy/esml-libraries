@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package groupId="cn.ai4energy.esml" artifactId="esml-renewable" version="0.1.0">
+  <namespace>Renewable</namespace>
+  <description>光伏、光热、风机。</description>
+  <license>MIT</license>
+  <dependencies>
+    <dependency coordinate="cn.ai4energy.esml:esml-units:0.1.0"/>
+    <dependency coordinate="cn.ai4energy.esml:esml-connectors:0.1.0"/>
+    <dependency coordinate="cn.ai4energy.esml:esml-thermal:0.1.0"/>
+    <dependency coordinate="cn.ai4energy.esml:esml-fluid:0.1.0"/>
+    <dependency coordinate="cn.ai4energy.esml:esml-electrical:0.1.0"/>
+  </dependencies>
+  <exports><export path="src/renewable.comp.esml"/></exports>
+</package>

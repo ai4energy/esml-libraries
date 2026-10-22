@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package groupId="cn.ai4energy.esml" artifactId="esml-control" version="0.1.0">
+  <namespace>Control</namespace>
+  <description>PID、限幅、信号源。</description>
+  <license>MIT</license>
+  <dependencies>
+    <dependency coordinate="cn.ai4energy.esml:esml-units:0.1.0"/>
+    <dependency coordinate="cn.ai4energy.esml:esml-connectors:0.1.0"/>
+  </dependencies>
+  <exports><export path="src/control.comp.esml"/></exports>
+</package>

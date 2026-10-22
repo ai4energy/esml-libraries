@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="Properties">
+  <use library="cn.ai4energy.esml:esml-units:0.1.0"/>
+  <modelTypes>
+    <modelType name="WaterProperties" discipline="properties">
+      <parameters>
+        <parameter name="rho" type="real" default="998.0"/>
+        <parameter name="cp" type="real" default="4180.0"/>
+        <parameter name="k" type="real" default="0.6"/>
+        <parameter name="mu" type="real" default="0.001"/>
+      </parameters>
+    </modelType>
+    <modelType name="IdealGasProperties" discipline="properties">
+      <parameters>
+        <parameter name="R" type="real" default="8.314462618"/>
+        <parameter name="cp" type="real" default="1005.0"/>
+      </parameters>
+    </modelType>
+  </modelTypes>
+</esml>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package groupId="cn.ai4energy.esml" artifactId="esml-properties" version="0.1.0">
+  <namespace>Properties</namespace>
+  <description>物性容器与常量物性。</description>
+  <license>MIT</license>
+  <dependencies>
+    <dependency coordinate="cn.ai4energy.esml:esml-units:0.1.0"/>
+  </dependencies>
+  <exports><export path="src/properties.comp.esml"/></exports>
+</package>

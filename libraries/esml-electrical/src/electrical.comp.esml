@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="Electrical">
+  <use library="cn.ai4energy.esml:esml-units:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-connectors:0.1.0"/>
+  <modelTypes>
+    <modelType name="ACLine" discipline="electrical">
+      <ports>
+        <port name="from" portType="ElectricalPin"/>
+        <port name="to" portType="ElectricalPin"/>
+      </ports>
+      <parameters>
+        <parameter name="R" type="real" default="0.02"/>
+        <parameter name="X" type="real" default="0.01"/>
+        <parameter name="L" type="real" default="10.0"/>
+        <parameter name="U" type="real" default="10000.0"/>
+      </parameters>
+      <equations>
+        <equation>from.i = to.i</equation>
+        <equation>from.v - to.v = 1.7320508075688772 * from.i * (R + X) * L</equation>
+      </equations>
+    </modelType>
+    <modelType name="Transformer" discipline="electrical">
+      <ports>
+        <port name="hv" portType="ElectricalPin"/>
+        <port name="lv" portType="ElectricalPin"/>
+      </ports>
+      <parameters>
+        <parameter name="ratio" type="real" default="25.0"/>
+        <parameter name="p_fe" type="real" default="2000.0"/>
+        <parameter name="p_cu" type="real" default="10000.0"/>
+      </parameters>
+      <equations>
+        <equation>lv.v = hv.v / ratio</equation>
+        <equation>hv.i * hv.v = lv.i * lv.v + p_fe + p_cu</equation>
+      </equations>
+    </modelType>
+    <modelType name="Motor" discipline="electrical">
+      <ports>
+        <port name="power" portType="ElectricalPin"/>
+        <port name="mech" portType="SignalPort"/>
+      </ports>
+      <parameters>
+        <parameter name="eta" type="real" default="0.92"/>
+        <parameter name="cosphi" type="real" default="0.85"/>
+      </parameters>
+      <equations>
+        <equation>power.i * power.v = mech.y / eta</equation>
+      </equations>
+    </modelType>
+    <modelType name="GridSource" discipline="electrical">
+      <ports><port name="pin" portType="ElectricalPin"/></ports>
+      <parameters><parameter name="U" type="real" default="400.0"/></parameters>
+      <equations><equation>pin.v = U</equation></equations>
+    </modelType>
+  </modelTypes>
+</esml>

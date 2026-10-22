@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="Systems.Energy">
+  <use library="cn.ai4energy.esml:esml-units:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-connectors:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-electrical:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-renewable:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-storage:0.1.0"/>
+  <modelTypes>
+    <modelType name="EnergyHub" discipline="systems">
+      <ports>
+        <port name="grid" portType="ElectricalPin"/>
+        <port name="storage" portType="ElectricalPin"/>
+        <port name="load" portType="ElectricalPin"/>
+      </ports>
+      <equations>
+        <equation>grid.P + storage.P = load.P</equation>
+      </equations>
+    </modelType>
+  </modelTypes>
+</esml>

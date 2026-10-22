@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="Renewable">
+  <use library="cn.ai4energy.esml:esml-units:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-connectors:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-thermal:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-fluid:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-electrical:0.1.0"/>
+  <modelTypes>
+    <modelType name="PVArray" discipline="renewable">
+      <ports><port name="power" portType="ElectricalPin"/></ports>
+      <parameters>
+        <parameter name="A" type="real" default="1.6"/>
+        <parameter name="eta" type="real" default="0.20"/>
+        <parameter name="gamma" type="real" default="-0.004"/>
+        <parameter name="G" type="real" default="1000.0"/>
+        <parameter name="Tc" type="real" default="25.0"/>
+      </parameters>
+      <equations>
+        <equation>power.P = G * A * eta * (1.0 + gamma * (Tc - 25.0))</equation>
+      </equations>
+    </modelType>
+    <modelType name="SolarCollector" discipline="renewable">
+      <ports><port name="heat" portType="ThermalPort"/></ports>
+      <parameters>
+        <parameter name="A" type="real" default="10.0"/>
+        <parameter name="eta0" type="real" default="0.60"/>
+        <parameter name="G" type="real" default="800.0"/>
+      </parameters>
+      <equations><equation>heat.Q = A * G * eta0</equation></equations>
+    </modelType>
+    <modelType name="WindTurbine" discipline="renewable">
+      <ports><port name="power" portType="ElectricalPin"/></ports>
+      <parameters>
+        <parameter name="D" type="real" default="60.0"/>
+        <parameter name="Cp" type="real" default="0.45"/>
+        <parameter name="rho" type="real" default="1.225"/>
+        <parameter name="v" type="real" default="10.0"/>
+      </parameters>
+      <equations>
+        <equation>power.P = 0.5 * rho * 3.141592653589793 * D * D / 4.0 * v * v * v * Cp</equation>
+      </equations>
+    </modelType>
+  </modelTypes>
+</esml>

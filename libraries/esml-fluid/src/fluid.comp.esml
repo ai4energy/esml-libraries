@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="Fluid">
+  <use library="cn.ai4energy.esml:esml-units:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-connectors:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-properties:0.1.0"/>
+  <modelTypes>
+    <modelType name="Pipe" discipline="fluid">
+      <ports>
+        <port name="inlet" portType="FluidPort"/>
+        <port name="outlet" portType="FluidPort"/>
+      </ports>
+      <parameters>
+        <parameter name="L" type="real" default="10.0"/>
+        <parameter name="D" type="real" default="0.1"/>
+        <parameter name="f" type="real" default="0.02"/>
+        <parameter name="rho" type="real" default="998.0"/>
+      </parameters>
+      <variables><variable name="v" type="real" role="algebraic"/></variables>
+      <equations>
+        <equation>inlet.m = outlet.m</equation>
+        <equation>inlet.T = outlet.T</equation>
+        <equation>v = inlet.m / (rho * 3.141592653589793 * D * D / 4.0)</equation>
+        <equation>inlet.p - outlet.p = f * (L / D) * 0.5 * rho * v * v</equation>
+      </equations>
+    </modelType>
+    <modelType name="Pump" discipline="fluid">
+      <ports>
+        <port name="inlet" portType="FluidPort"/>
+        <port name="outlet" portType="FluidPort"/>
+      </ports>
+      <parameters>
+        <parameter name="head" type="real" default="10.0"/>
+        <parameter name="eta" type="real" default="0.7"/>
+        <parameter name="rho" type="real" default="998.0"/>
+      </parameters>
+      <variables><variable name="P_shaft" type="real" role="algebraic"/></variables>
+      <equations>
+        <equation>inlet.m = outlet.m</equation>
+        <equation>outlet.p - inlet.p = rho * 9.80665 * head</equation>
+        <equation>P_shaft = rho * 9.80665 * outlet.m * head / (rho * eta)</equation>
+      </equations>
+    </modelType>
+    <modelType name="Valve" discipline="fluid">
+      <ports>
+        <port name="inlet" portType="FluidPort"/>
+        <port name="outlet" portType="FluidPort"/>
+      </ports>
+      <parameters>
+        <parameter name="K" type="real" default="5.0"/>
+        <parameter name="rho" type="real" default="998.0"/>
+        <parameter name="A" type="real" default="0.00785398"/>
+      </parameters>
+      <variables><variable name="v" type="real" role="algebraic"/></variables>
+      <equations>
+        <equation>inlet.m = outlet.m</equation>
+        <equation>v = inlet.m / (rho * A)</equation>
+        <equation>inlet.p - outlet.p = K * 0.5 * rho * v * v</equation>
+      </equations>
+    </modelType>
+    <modelType name="Tank" discipline="fluid">
+      <ports><port name="liquid" portType="FluidPort"/></ports>
+      <parameters>
+        <parameter name="A" type="real" default="1.0"/>
+        <parameter name="rho" type="real" default="998.0"/>
+      </parameters>
+      <variables><variable name="level" type="real" role="state" initial="0.5"/></variables>
+      <equations>
+        <equation>der(level) = liquid.m / (rho * A)</equation>
+      </equations>
+    </modelType>
+  </modelTypes>
+</esml>
