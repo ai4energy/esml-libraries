@@ -16,7 +16,7 @@
         <parameter name="Tc" type="real" default="25.0"/>
       </parameters>
       <equations>
-        <equation>power.P = G * A * eta * (1.0 + gamma * (Tc - 25.0))</equation>
+        <equation>power.i * power.v = -G * A * eta * (1.0 + gamma * (Tc - 25.0))</equation>
       </equations>
     </modelType>
     <modelType name="SolarCollector" discipline="renewable">
@@ -26,7 +26,7 @@
         <parameter name="eta0" type="real" default="0.60"/>
         <parameter name="G" type="real" default="800.0"/>
       </parameters>
-      <equations><equation>heat.Q = A * G * eta0</equation></equations>
+      <equations><equation>heat.Q = -A * G * eta0</equation></equations>
     </modelType>
     <modelType name="WindTurbine" discipline="renewable">
       <ports><port name="power" portType="ElectricalPin"/></ports>
@@ -37,7 +37,7 @@
         <parameter name="v" type="real" default="10.0"/>
       </parameters>
       <equations>
-        <equation>power.P = 0.5 * rho * 3.141592653589793 * D * D / 4.0 * v * v * v * Cp</equation>
+        <equation>power.i * power.v = -0.5 * rho * 3.141592653589793 * D * D / 4.0 * v * v * v * Cp</equation>
       </equations>
     </modelType>
   </modelTypes>

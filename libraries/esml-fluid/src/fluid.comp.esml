@@ -17,10 +17,10 @@
       </parameters>
       <variables><variable name="v" type="real" role="algebraic"/></variables>
       <equations>
-        <equation>inlet.m = outlet.m</equation>
+        <equation>inlet.m + outlet.m = 0</equation>
         <equation>inlet.T = outlet.T</equation>
         <equation>v = inlet.m / (rho * 3.141592653589793 * D * D / 4.0)</equation>
-        <equation>inlet.p - outlet.p = f * (L / D) * 0.5 * rho * v * v</equation>
+        <equation>inlet.p - outlet.p = f * (L / D) * 0.5 * rho * v * abs(v)</equation>
       </equations>
     </modelType>
     <modelType name="Pump" discipline="fluid">
@@ -35,9 +35,9 @@
       </parameters>
       <variables><variable name="P_shaft" type="real" role="algebraic"/></variables>
       <equations>
-        <equation>inlet.m = outlet.m</equation>
+        <equation>inlet.m + outlet.m = 0</equation>
         <equation>outlet.p - inlet.p = rho * 9.80665 * head</equation>
-        <equation>P_shaft = rho * 9.80665 * outlet.m * head / (rho * eta)</equation>
+        <equation>P_shaft = 9.80665 * inlet.m * head / eta</equation>
       </equations>
     </modelType>
     <modelType name="Valve" discipline="fluid">
@@ -52,9 +52,9 @@
       </parameters>
       <variables><variable name="v" type="real" role="algebraic"/></variables>
       <equations>
-        <equation>inlet.m = outlet.m</equation>
+        <equation>inlet.m + outlet.m = 0</equation>
         <equation>v = inlet.m / (rho * A)</equation>
-        <equation>inlet.p - outlet.p = K * 0.5 * rho * v * v</equation>
+        <equation>inlet.p - outlet.p = K * 0.5 * rho * v * abs(v)</equation>
       </equations>
     </modelType>
     <modelType name="Tank" discipline="fluid">

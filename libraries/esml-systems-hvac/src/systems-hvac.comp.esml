@@ -12,7 +12,7 @@
         <port name="load" portType="ThermalPort"/>
       </ports>
       <equations>
-        <equation>source.Q = load.Q</equation>
+        <equation>source.Q + load.Q = 0</equation>
         <equation>source.T = load.T</equation>
       </equations>
     </modelType>

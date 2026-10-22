@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="TwoTank">
+  <use library="cn.ai4energy.esml:esml-connectors:0.1.0"/>
+  <modelTypes>
+    <modelType name="LiquidTank" discipline="fluid">
+      <ports><port name="liquid" portType="FluidPort"/></ports>
+      <parameters>
+        <parameter name="A" type="real" default="0.1"/>
+        <parameter name="rho" type="real" default="998.0"/>
+        <parameter name="p0" type="real" default="101325.0"/>
+      </parameters>
+      <variables>
+        <variable name="level" type="real" role="state" initial="0.5"/>
+        <variable name="liquid.p" type="real" role="algebraic"/>
+        <variable name="liquid.T" type="real" role="algebraic"/>
+        <variable name="liquid.m" type="real" role="algebraic"/>
+      </variables>
+      <equations>
+        <equation>liquid.p = p0 + rho * 9.80665 * level</equation>
+        <equation>liquid.T = 298.15</equation>
+        <equation>D(level) = liquid.m / (rho * A)</equation>
+      </equations>
+    </modelType>
+    <modelType name="LinearPipe" discipline="fluid">
+      <ports>
+        <port name="inlet" portType="FluidPort"/>
+        <port name="outlet" portType="FluidPort"/>
+      </ports>
+      <parameters><parameter name="R" type="real" default="1000.0"/></parameters>
+      <variables>
+        <variable name="inlet.p" type="real" role="algebraic"/>
+        <variable name="outlet.p" type="real" role="algebraic"/>
+        <variable name="inlet.T" type="real" role="algebraic"/>
+        <variable name="outlet.T" type="real" role="algebraic"/>
+        <variable name="inlet.m" type="real" role="algebraic"/>
+        <variable name="outlet.m" type="real" role="algebraic"/>
+      </variables>
+      <equations>
+        <equation>inlet.p - outlet.p = R * inlet.m</equation>
+        <equation>inlet.m + outlet.m = 0</equation>
+      </equations>
+    </modelType>
+  </modelTypes>
+  <systems>
+    <system name="Tanks">
+      <instances>
+        <instance name="tank1" type="LiquidTank"/>
+        <instance name="pipe" type="LinearPipe"/>
+        <instance name="tank2" type="LiquidTank"/>
+      </instances>
+      <connections>
+        <connection from="tank1.liquid" to="pipe.inlet"/>
+        <connection from="pipe.outlet" to="tank2.liquid"/>
+      </connections>
+      <sets>
+        <scope instance="tank1"><set path="A" value="0.1"/></scope>
+        <scope instance="pipe"><set path="R" value="1000.0"/></scope>
+        <scope instance="tank2"><set path="A" value="0.1"/></scope>
+      </sets>
+      <initial>
+        <scope instance="tank1"><equation>level = 1.0</equation></scope>
+        <scope instance="tank2"><equation>level = 0.0</equation></scope>
+      </initial>
+      <schedule><sequence><continueFor time="300"/></sequence></schedule>
+    </system>
+  </systems>
+</esml>

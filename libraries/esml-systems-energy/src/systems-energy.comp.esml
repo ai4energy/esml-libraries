@@ -13,7 +13,7 @@
         <port name="load" portType="ElectricalPin"/>
       </ports>
       <equations>
-        <equation>grid.P + storage.P = load.P</equation>
+        <equation>grid.i * grid.v + storage.i * storage.v + load.i * load.v = 0</equation>
       </equations>
     </modelType>
   </modelTypes>

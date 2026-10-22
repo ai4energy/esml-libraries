@@ -14,8 +14,8 @@
       </ports>
       <parameters><parameter name="COP" type="real" default="3.0"/></parameters>
       <equations>
-        <equation>hot.Q = COP * power.P</equation>
-        <equation>cold.Q = hot.Q - power.P</equation>
+        <equation>hot.Q = -COP * power.i * power.v</equation>
+        <equation>cold.Q = (COP - 1.0) * power.i * power.v</equation>
       </equations>
     </modelType>
     <modelType name="Chiller" discipline="hvac">
@@ -26,8 +26,8 @@
       </ports>
       <parameters><parameter name="COP" type="real" default="4.0"/></parameters>
       <equations>
-        <equation>cold.Q = COP * power.P</equation>
-        <equation>hot.Q = cold.Q + power.P</equation>
+        <equation>cold.Q = -COP * power.i * power.v</equation>
+        <equation>hot.Q = (COP + 1.0) * power.i * power.v</equation>
       </equations>
     </modelType>
     <modelType name="FanCoil" discipline="hvac">
@@ -41,8 +41,8 @@
         <parameter name="eta" type="real" default="0.98"/>
       </parameters>
       <equations>
-        <equation>water_in.m = water_out.m</equation>
-        <equation>air.Q = eta * water_in.m * cp * (water_in.T - water_out.T)</equation>
+        <equation>water_in.m + water_out.m = 0</equation>
+        <equation>air.Q = -eta * water_in.m * cp * (water_in.T - water_out.T)</equation>
       </equations>
     </modelType>
   </modelTypes>

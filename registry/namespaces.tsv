@@ -14,3 +14,4 @@ Chemical	cn.ai4energy.esml	esml-chemical	reserved
 Systems.Energy	cn.ai4energy.esml	esml-systems-energy	reserved
 Systems.HVAC	cn.ai4energy.esml	esml-systems-hvac	reserved
 Systems.Process	cn.ai4energy.esml	esml-systems-process	reserved
+Examples.Fluid	cn.ai4energy.esml	esml-examples-fluid	reserved

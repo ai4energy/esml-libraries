@@ -17,5 +17,6 @@
     <package coordinate="cn.ai4energy.esml:esml-systems-hvac:0.1.0"/>
     <package coordinate="cn.ai4energy.esml:esml-systems-process:0.1.0"/>
     <package coordinate="cn.ai4energy.esml:esml-examples-thermal:0.2.0"/>
+    <package coordinate="cn.ai4energy.esml:esml-examples-fluid:0.1.0"/>
   </packages>
 </bom>

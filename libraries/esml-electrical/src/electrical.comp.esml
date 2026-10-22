@@ -15,7 +15,7 @@
         <parameter name="U" type="real" default="10000.0"/>
       </parameters>
       <equations>
-        <equation>from.i = to.i</equation>
+        <equation>from.i + to.i = 0</equation>
         <equation>from.v - to.v = 1.7320508075688772 * from.i * (R + X) * L</equation>
       </equations>
     </modelType>
@@ -31,7 +31,7 @@
       </parameters>
       <equations>
         <equation>lv.v = hv.v / ratio</equation>
-        <equation>hv.i * hv.v = lv.i * lv.v + p_fe + p_cu</equation>
+        <equation>hv.i * hv.v + lv.i * lv.v = p_fe + p_cu</equation>
       </equations>
     </modelType>
     <modelType name="Motor" discipline="electrical">

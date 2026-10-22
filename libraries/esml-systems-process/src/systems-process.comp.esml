@@ -11,7 +11,7 @@
         <port name="product" portType="FluidPort"/>
       </ports>
       <equations>
-        <equation>feed.m = product.m</equation>
+        <equation>feed.m + product.m = 0</equation>
         <equation>feed.p = product.p</equation>
       </equations>
     </modelType>
