@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="DCCircuit">
+  <use library="cn.ai4energy.esml:esml-electrical:0.1.0"/>
+  <modelTypes>
+    <modelType name="VoltageSource" discipline="electrical">
+      <ports>
+        <port name="p" portType="ElectricalPin"/>
+        <port name="n" portType="ElectricalPin"/>
+      </ports>
+      <parameters><parameter name="U" type="real" default="10.0"/></parameters>
+      <variables>
+        <variable name="p.v" type="real" role="algebraic"/>
+        <variable name="n.v" type="real" role="algebraic"/>
+        <variable name="p.i" type="real" role="algebraic"/>
+        <variable name="n.i" type="real" role="algebraic"/>
+      </variables>
+      <equations>
+        <equation>p.v - n.v = U</equation>
+        <equation>p.i + n.i = 0</equation>
+      </equations>
+    </modelType>
+    <modelType name="Resistor" discipline="electrical">
+      <ports>
+        <port name="p" portType="ElectricalPin"/>
+        <port name="n" portType="ElectricalPin"/>
+      </ports>
+      <parameters><parameter name="R" type="real" default="100.0"/></parameters>
+      <variables>
+        <variable name="p.v" type="real" role="algebraic"/>
+        <variable name="n.v" type="real" role="algebraic"/>
+        <variable name="p.i" type="real" role="algebraic"/>
+        <variable name="n.i" type="real" role="algebraic"/>
+      </variables>
+      <equations>
+        <equation>p.v - n.v = R * p.i</equation>
+        <equation>p.i + n.i = 0</equation>
+      </equations>
+    </modelType>
+    <modelType name="Ground" discipline="electrical">
+      <ports><port name="g" portType="ElectricalPin"/></ports>
+      <variables>
+        <variable name="g.v" type="real" role="algebraic"/>
+        <variable name="g.i" type="real" role="algebraic"/>
+      </variables>
+      <equations><equation>g.v = 0</equation></equations>
+    </modelType>
+  </modelTypes>
+  <systems>
+    <system name="Loop">
+      <instances>
+        <instance name="vs" type="VoltageSource"/>
+        <instance name="line" type="ACLine"/>
+        <instance name="load" type="Resistor"/>
+        <instance name="gnd" type="Ground"/>
+      </instances>
+      <connections>
+        <connection from="vs.p" to="line.from"/>
+        <connection from="line.to" to="load.p"/>
+        <connection from="vs.n" to="gnd.g"/>
+        <connection from="load.n" to="gnd.g"/>
+      </connections>
+      <sets>
+        <scope instance="vs"><set path="U" value="10.0"/></scope>
+        <scope instance="line"><set path="R" value="0.001"/><set path="X" value="0.0"/><set path="L" value="0.001"/></scope>
+        <scope instance="load"><set path="R" value="100.0"/></scope>
+      </sets>
+    </system>
+  </systems>
+</esml>
