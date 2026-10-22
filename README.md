@@ -50,4 +50,4 @@ python3 tools/resolve.py cn.ai4energy.esml:esml-thermal:0.1.0
 
 ## 边界
 
-本仓只组织模型与坐标，不包含求解器、编译器或商业产品实现。
+本仓只组织开放模型与坐标，不包含求解器或编译器。
