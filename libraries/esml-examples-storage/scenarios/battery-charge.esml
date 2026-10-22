@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="BatteryCharge">
+  <use library="cn.ai4energy.esml:esml-connectors:0.1.0"/>
+  <modelTypes>
+    <modelType name="BatteryOnBus" discipline="storage">
+      <ports><port name="power" portType="ElectricalPin"/></ports>
+      <parameters>
+        <parameter name="E_cap" type="real" default="36000000.0"/>
+        <parameter name="eta" type="real" default="0.95"/>
+        <parameter name="P" type="real" default="5000.0"/>
+        <parameter name="U" type="real" default="400.0"/>
+      </parameters>
+      <variables>
+        <variable name="SOC" type="real" role="state" initial="0.2"/>
+        <variable name="power.v" type="real" role="algebraic"/>
+        <variable name="power.i" type="real" role="algebraic"/>
+      </variables>
+      <equations>
+        <equation>power.i = P / power.v</equation>
+        <equation>D(SOC) = eta * P / E_cap</equation>
+      </equations>
+    </modelType>
+    <modelType name="Bus" discipline="electrical">
+      <ports><port name="pin" portType="ElectricalPin"/></ports>
+      <parameters><parameter name="U" type="real" default="400.0"/></parameters>
+      <variables>
+        <variable name="pin.v" type="real" role="algebraic"/>
+        <variable name="pin.i" type="real" role="algebraic"/>
+      </variables>
+      <equations><equation>pin.v = U</equation></equations>
+    </modelType>
+  </modelTypes>
+  <systems>
+    <system name="Charge">
+      <instances>
+        <instance name="batt" type="BatteryOnBus"/>
+        <instance name="bus" type="Bus"/>
+      </instances>
+      <connections><connection from="batt.power" to="bus.pin"/></connections>
+      <sets>
+        <scope instance="batt"><set path="P" value="5000.0"/><set path="eta" value="0.95"/><set path="E_cap" value="36000000.0"/></scope>
+        <scope instance="bus"><set path="U" value="400.0"/></scope>
+      </sets>
+      <initial><scope instance="batt"><equation>SOC = 0.2</equation></scope></initial>
+      <schedule><sequence><continueFor time="60"/></sequence></schedule>
+    </system>
+  </systems>
+</esml>

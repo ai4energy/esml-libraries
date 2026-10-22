@@ -20,5 +20,6 @@
     <package coordinate="cn.ai4energy.esml:esml-examples-fluid:0.1.0"/>
     <package coordinate="cn.ai4energy.esml:esml-examples-electrical:0.1.0"/>
     <package coordinate="cn.ai4energy.esml:esml-examples-energy:0.1.0"/>
+    <package coordinate="cn.ai4energy.esml:esml-examples-storage:0.1.0"/>
   </packages>
 </bom>
