@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="TwoCap">
+  <use library="cn.ai4energy.esml:esml-connectors:0.1.0"/>
+  <modelTypes>
+    <modelType name="ThermalCapacitance" discipline="thermal">
+      <ports><port name="node" portType="ThermalPort"/></ports>
+      <parameters><parameter name="C" type="real" default="1000.0"/></parameters>
+      <variables>
+        <variable name="T" type="real" role="state" initial="300.0"/>
+        <variable name="node.T" type="real" role="algebraic"/>
+        <variable name="node.Q" type="real" role="algebraic"/>
+      </variables>
+      <equations>
+        <equation>node.T = T</equation>
+        <equation>C * D(T) = node.Q</equation>
+      </equations>
+    </modelType>
+    <modelType name="ThermalResistance" discipline="thermal">
+      <ports>
+        <port name="a" portType="ThermalPort"/>
+        <port name="b" portType="ThermalPort"/>
+      </ports>
+      <parameters><parameter name="R" type="real" default="0.01"/></parameters>
+      <variables>
+        <variable name="a.Q" type="real" role="algebraic"/>
+        <variable name="b.Q" type="real" role="algebraic"/>
+      </variables>
+      <equations>
+        <equation>a.Q = (a.T - b.T) / R</equation>
+        <equation>a.Q + b.Q = 0</equation>
+      </equations>
+    </modelType>
+  </modelTypes>
+  <systems>
+    <system name="Chain">
+      <instances>
+        <instance name="cap1" type="ThermalCapacitance"/>
+        <instance name="res" type="ThermalResistance"/>
+        <instance name="cap2" type="ThermalCapacitance"/>
+      </instances>
+      <connections>
+        <connection from="cap1.node" to="res.a"/>
+        <connection from="res.b" to="cap2.node"/>
+      </connections>
+      <sets>
+        <scope instance="cap1"><set path="C" value="1000.0"/></scope>
+        <scope instance="res"><set path="R" value="0.01"/></scope>
+        <scope instance="cap2"><set path="C" value="1000.0"/></scope>
+      </sets>
+      <initial>
+        <scope instance="cap1"><equation>T = 350.0</equation></scope>
+        <scope instance="cap2"><equation>T = 300.0</equation></scope>
+      </initial>
+      <schedule><sequence><continueFor time="40"/></sequence></schedule>
+    </system>
+  </systems>
+</esml>

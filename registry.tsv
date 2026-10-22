@@ -13,3 +13,4 @@ cn.ai4energy.esml:esml-chemical:0.1.0	libraries/esml-chemical/src/chemical.comp.
 cn.ai4energy.esml:esml-systems-energy:0.1.0	libraries/esml-systems-energy/src/systems-energy.comp.esml
 cn.ai4energy.esml:esml-systems-hvac:0.1.0	libraries/esml-systems-hvac/src/systems-hvac.comp.esml
 cn.ai4energy.esml:esml-systems-process:0.1.0	libraries/esml-systems-process/src/systems-process.comp.esml
+cn.ai4energy.esml:esml-examples-thermal:0.2.0	libraries/esml-examples-thermal-0.2.0/scenarios/two-capacities.esml
