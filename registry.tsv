@@ -1,0 +1,15 @@
+cn.ai4energy.esml:esml-units:0.1.0	libraries/esml-units/src/units.comp.esml
+cn.ai4energy.esml:esml-connectors:0.1.0	libraries/esml-connectors/src/connectors.comp.esml
+cn.ai4energy.esml:esml-thermal:0.1.0	libraries/esml-thermal/src/thermal.comp.esml
+cn.ai4energy.esml:esml-examples-thermal:0.1.0	libraries/esml-examples-thermal/scenarios/simple-loop.esml
+cn.ai4energy.esml:esml-properties:0.1.0	libraries/esml-properties/src/properties.comp.esml
+cn.ai4energy.esml:esml-fluid:0.1.0	libraries/esml-fluid/src/fluid.comp.esml
+cn.ai4energy.esml:esml-electrical:0.1.0	libraries/esml-electrical/src/electrical.comp.esml
+cn.ai4energy.esml:esml-control:0.1.0	libraries/esml-control/src/control.comp.esml
+cn.ai4energy.esml:esml-renewable:0.1.0	libraries/esml-renewable/src/renewable.comp.esml
+cn.ai4energy.esml:esml-storage:0.1.0	libraries/esml-storage/src/storage.comp.esml
+cn.ai4energy.esml:esml-hvac:0.1.0	libraries/esml-hvac/src/hvac.comp.esml
+cn.ai4energy.esml:esml-chemical:0.1.0	libraries/esml-chemical/src/chemical.comp.esml
+cn.ai4energy.esml:esml-systems-energy:0.1.0	libraries/esml-systems-energy/src/systems-energy.comp.esml
+cn.ai4energy.esml:esml-systems-hvac:0.1.0	libraries/esml-systems-hvac/src/systems-hvac.comp.esml
+cn.ai4energy.esml:esml-systems-process:0.1.0	libraries/esml-systems-process/src/systems-process.comp.esml
