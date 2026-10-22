@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="CSTRCase">
+  <use library="cn.ai4energy.esml:esml-chemical:0.1.0"/>
+  <modelTypes>
+    <modelType name="FlowSource" discipline="fluid">
+      <ports><port name="out" portType="FluidPort"/></ports>
+      <parameters>
+        <parameter name="m" type="real" default="99.8"/>
+        <parameter name="T" type="real" default="300.0"/>
+        <parameter name="p" type="real" default="100000.0"/>
+      </parameters>
+      <variables>
+        <variable name="out.m" type="real" role="algebraic"/>
+        <variable name="out.T" type="real" role="algebraic"/>
+        <variable name="out.p" type="real" role="algebraic"/>
+      </variables>
+      <equations>
+        <equation>out.m = -m</equation>
+        <equation>out.T = T</equation>
+        <equation>out.p = p</equation>
+      </equations>
+    </modelType>
+    <modelType name="FlowSink" discipline="fluid">
+      <ports><port name="in" portType="FluidPort"/></ports>
+      <parameters><parameter name="p" type="real" default="100000.0"/></parameters>
+      <variables>
+        <variable name="in.m" type="real" role="algebraic"/>
+        <variable name="in.T" type="real" role="algebraic"/>
+        <variable name="in.p" type="real" role="algebraic"/>
+      </variables>
+      <equations><equation>in.p = p</equation></equations>
+    </modelType>
+  </modelTypes>
+  <systems>
+    <system name="Reaction">
+      <instances>
+        <instance name="src" type="FlowSource"/>
+        <instance name="rxr" type="CSTR"/>
+        <instance name="snk" type="FlowSink"/>
+      </instances>
+      <connections>
+        <connection from="src.out" to="rxr.feed"/>
+        <connection from="rxr.product" to="snk.in"/>
+      </connections>
+      <sets>
+        <scope instance="src"><set path="m" value="99.8"/></scope>
+        <scope instance="rxr"><set path="V" value="1.0"/><set path="k" value="0.1"/><set path="rho" value="998.0"/></scope>
+      </sets>
+    </system>
+  </systems>
+</esml>

@@ -18,3 +18,4 @@ cn.ai4energy.esml:esml-examples-fluid:0.1.0	libraries/esml-examples-fluid/scenar
 cn.ai4energy.esml:esml-examples-electrical:0.1.0	libraries/esml-examples-electrical/scenarios/dc-circuit.esml
 cn.ai4energy.esml:esml-examples-energy:0.1.0	libraries/esml-examples-energy/scenarios/microgrid.esml
 cn.ai4energy.esml:esml-examples-storage:0.1.0	libraries/esml-examples-storage/scenarios/battery-charge.esml
+cn.ai4energy.esml:esml-examples-chemical:0.1.0	libraries/esml-examples-chemical/scenarios/cstr.esml

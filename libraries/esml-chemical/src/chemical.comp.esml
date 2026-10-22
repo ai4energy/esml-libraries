@@ -19,6 +19,7 @@
       <variables><variable name="X" type="real" role="algebraic"/></variables>
       <equations>
         <equation>feed.m + product.m = 0</equation>
+        <equation>product.T = feed.T</equation>
         <equation>X = k * V / (feed.m / rho + k * V)</equation>
       </equations>
     </modelType>
@@ -34,6 +35,8 @@
       </parameters>
       <equations>
         <equation>feed.m + vapor.m + liquid.m = 0</equation>
+        <equation>vapor.T = feed.T</equation>
+        <equation>liquid.T = feed.T</equation>
         <equation>vapor.p = P</equation>
         <equation>liquid.p = P</equation>
       </equations>
@@ -50,6 +53,8 @@
       </parameters>
       <equations>
         <equation>feed.m + top.m + bottom.m = 0</equation>
+        <equation>top.T = feed.T</equation>
+        <equation>bottom.T = feed.T</equation>
         <equation>top.p = feed.p</equation>
         <equation>bottom.p = feed.p</equation>
       </equations>
