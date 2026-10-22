@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 连接器包：只声明端口类型，不声明设备。导出命名空间 Connectors。 -->
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="Connectors">
+  <use library="cn.ai4energy.esml:esml-units:0.1.0"/>
+  <portTypes>
+    <portType name="FluidPort">
+      <variables>
+        <portVariable name="p" role="potential" type="real"/>
+        <portVariable name="T" role="potential" type="real"/>
+        <portVariable name="m" role="flow" type="real"/>
+      </variables>
+    </portType>
+    <portType name="ThermalPort">
+      <variables>
+        <portVariable name="T" role="potential" type="real"/>
+        <portVariable name="Q" role="flow" type="real"/>
+      </variables>
+    </portType>
+    <portType name="ElectricalPin">
+      <variables>
+        <portVariable name="v" role="potential" type="real"/>
+        <portVariable name="i" role="flow" type="real"/>
+      </variables>
+    </portType>
+    <portType name="SignalPort">
+      <variables>
+        <portVariable name="y" role="input" type="real"/>
+      </variables>
+    </portType>
+  </portTypes>
+</esml>

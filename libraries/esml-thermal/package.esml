@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package groupId="cn.ai4energy.esml" artifactId="esml-thermal" version="0.1.0">
+  <namespace>Thermal</namespace>
+  <description>热工设备：管道、换热器、储热。</description>
+  <license>MIT</license>
+  <dependencies>
+    <dependency coordinate="cn.ai4energy.esml:esml-units:0.1.0"/>
+    <dependency coordinate="cn.ai4energy.esml:esml-connectors:0.1.0"/>
+  </dependencies>
+  <exports>
+    <export path="src/thermal.comp.esml"/>
+  </exports>
+</package>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bom groupId="cn.ai4energy.esml" artifactId="esml-bom" version="0.1.0">
+  <packages>
+    <package coordinate="cn.ai4energy.esml:esml-units:0.1.0"/>
+    <package coordinate="cn.ai4energy.esml:esml-connectors:0.1.0"/>
+    <package coordinate="cn.ai4energy.esml:esml-thermal:0.1.0"/>
+    <package coordinate="cn.ai4energy.esml:esml-examples-thermal:0.1.0"/>
+  </packages>
+</bom>

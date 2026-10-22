@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 单位包：只声明单位，不声明设备。导出命名空间 Units。 -->
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="Units">
+  <units>
+    <unitsBase>
+      <unit name="kg" base="kg" scale="1" offset="0"/>
+      <unit name="m"  base="m"  scale="1" offset="0"/>
+      <unit name="s"  base="s"  scale="1" offset="0"/>
+      <unit name="K"  base="K"  scale="1" offset="0"/>
+      <unit name="mol" base="mol" scale="1" offset="0"/>
+      <unit name="A"  base="A"  scale="1" offset="0"/>
+    </unitsBase>
+    <unitsDerived>
+      <unit name="Pa" base="kg/m/s^2" scale="1" offset="0"/>
+      <unit name="J"  base="kg*m^2/s^2" scale="1" offset="0"/>
+      <unit name="W"  base="kg*m^2/s^3" scale="1" offset="0"/>
+      <unit name="MW" base="W" scale="1e6" offset="0"/>
+      <unit name="bar" base="Pa" scale="1e5" offset="0"/>
+    </unitsDerived>
+  </units>
+</esml>

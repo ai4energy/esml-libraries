@@ -1,0 +1,5 @@
+groupId	artifactId	version	namespace	path	repository	commit	sha256	status	license	dependencies	replacement
+cn.ai4energy.esml	esml-units	0.1.0	Units	libraries/esml-units	local	-	6d8038da827c4d856e4f6cf0f92dd59e5ead39e63999a3f4939f81c193b1d576	stable	MIT	-	-
+cn.ai4energy.esml	esml-connectors	0.1.0	Connectors	libraries/esml-connectors	local	-	4c17076fa4867b9958f29b2ca5df052507c4b7dc088f090795078b0639a20d49	stable	MIT	cn.ai4energy.esml:esml-units:0.1.0	-
+cn.ai4energy.esml	esml-thermal	0.1.0	Thermal	libraries/esml-thermal	local	-	cecd6c0d6e9e2371935261843c97051c30216ae041df578615f4b7cccc924d91	stable	MIT	cn.ai4energy.esml:esml-units:0.1.0,cn.ai4energy.esml:esml-connectors:0.1.0	-
+cn.ai4energy.esml	esml-examples-thermal	0.1.0	Examples.Thermal	libraries/esml-examples-thermal	local	-	418fc7836fe71c483feb2ed67c4b4ddea58a21f6918cec11316805a3d8cb4c1f	stable	MIT	cn.ai4energy.esml:esml-thermal:0.1.0	-

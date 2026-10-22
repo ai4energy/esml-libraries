@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 热工包：最小设备模型（教学/骨架）。导出命名空间 Thermal。 -->
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="Thermal">
+  <use library="cn.ai4energy.esml:esml-units:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-connectors:0.1.0"/>
+  <modelTypes>
+    <modelType name="Pipe" discipline="thermal">
+      <ports>
+        <port name="inlet" portType="FluidPort"/>
+        <port name="outlet" portType="FluidPort"/>
+      </ports>
+      <parameters>
+        <parameter name="L" type="real" default="1.0"/>
+        <parameter name="D" type="real" default="0.05"/>
+        <parameter name="lambda" type="real" default="0.6"/>
+      </parameters>
+      <variables>
+        <variable name="T" type="real" role="state" initial="300.0"/>
+      </variables>
+      <equations>
+        <equation>inlet.p = outlet.p</equation>
+        <equation>inlet.m = outlet.m</equation>
+        <equation>inlet.T = outlet.T</equation>
+      </equations>
+    </modelType>
+    <modelType name="HeatExchanger" discipline="thermal">
+      <ports>
+        <port name="hot_in" portType="FluidPort"/>
+        <port name="hot_out" portType="FluidPort"/>
+        <port name="cold_in" portType="FluidPort"/>
+        <port name="cold_out" portType="FluidPort"/>
+      </ports>
+      <parameters>
+        <parameter name="UA" type="real" default="1000.0"/>
+      </parameters>
+      <equations>
+        <equation>hot_in.m = hot_out.m</equation>
+        <equation>cold_in.m = cold_out.m</equation>
+        <equation>hot_in.T = hot_out.T</equation>
+        <equation>cold_in.T = cold_out.T</equation>
+      </equations>
+    </modelType>
+  </modelTypes>
+</esml>

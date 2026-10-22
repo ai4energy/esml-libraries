@@ -1,0 +1,5 @@
+namespace	groupId	artifactId	status
+Units	cn.ai4energy.esml	esml-units	reserved
+Connectors	cn.ai4energy.esml	esml-connectors	reserved
+Thermal	cn.ai4energy.esml	esml-thermal	reserved
+Examples.Thermal	cn.ai4energy.esml	esml-examples-thermal	reserved

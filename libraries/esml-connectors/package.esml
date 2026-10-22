@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package groupId="cn.ai4energy.esml" artifactId="esml-connectors" version="0.1.0">
+  <namespace>Connectors</namespace>
+  <description>端口类型：流体、热、电、信号。</description>
+  <license>MIT</license>
+  <dependencies>
+    <dependency coordinate="cn.ai4energy.esml:esml-units:0.1.0"/>
+  </dependencies>
+  <exports>
+    <export path="src/connectors.comp.esml"/>
+  </exports>
+</package>

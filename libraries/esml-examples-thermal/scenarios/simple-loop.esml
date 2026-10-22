@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 场景包：引用热工包，组装一个最小回路。 -->
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="SimpleThermalLoop">
+  <use library="cn.ai4energy.esml:esml-thermal:0.1.0"/>
+  <systems>
+    <system name="Loop">
+      <instances>
+        <instance name="pipe" type="Pipe"/>
+      </instances>
+    </system>
+  </systems>
+</esml>

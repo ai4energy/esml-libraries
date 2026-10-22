@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package groupId="cn.ai4energy.esml" artifactId="esml-examples-thermal" version="0.1.0">
+  <namespace>Examples.Thermal</namespace>
+  <description>热工场景包：只依赖领域包，演示引用与组合。</description>
+  <license>MIT</license>
+  <dependencies>
+    <dependency coordinate="cn.ai4energy.esml:esml-thermal:0.1.0"/>
+  </dependencies>
+  <exports>
+    <export path="scenarios/simple-loop.esml"/>
+  </exports>
+</package>

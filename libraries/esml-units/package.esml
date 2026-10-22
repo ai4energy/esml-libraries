@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package groupId="cn.ai4energy.esml" artifactId="esml-units" version="0.1.0">
+  <namespace>Units</namespace>
+  <description>单位与量纲：SI 基单位与常用派生单位。</description>
+  <license>MIT</license>
+  <exports>
+    <export path="src/units.comp.esml"/>
+  </exports>
+</package>
