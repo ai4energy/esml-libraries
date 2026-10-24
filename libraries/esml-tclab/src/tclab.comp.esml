@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Author: Mingtao Li <mingtao@xjtu.edu.cn> -->
+<!--
+  TCLab — Temperature Control Lab（2 加热器 / 2 温度传感器）双热容集总热模型
+  ==========================================================================
+  导出命名空间 `TCLab`；canonical component：`TCLab.TCLab2Lumped`。
+
+  ── 上游与出处 ────────────────────────────────────────────────────────
+  模型语义来自 APMonitor 的 ArduinoModeling2 教学模型（Hedengren, BYU）：
+    https://apmonitor.com/pdc/index.php/Main/ArduinoModeling2
+    Park, Martin, Kelly, Hedengren, "Benchmark Temperature Microcontroller
+    for Process Dynamics and Control", Computers & Chemical Engineering,
+    Vol. 135, 2020 (DOI: 10.1016/j.compchemeng.2020.106736).
+  本文件是 ModelicaByExample 语料里那份 TCLab 组件的**单位修正版**：
+  引擎内库 `library/domains/thermal/tclab.comp.esml`（坐标
+  `cn.ai4energy.esml.thermal:tclab:0.1`）与引擎 SIL 资产
+  `examples/sil-calibration/tclab.esml` 都是它的下游。
+
+  ── 物理（逐字沿用上游，方程/参数值/初始条件一字未动）───────────────
+      m·Cp·dT1/dt = U·A·(Ta − T1)  + ε·σ·A·(Ta⁴ − T1⁴)      ← 对环境
+                    + U·As·(T2 − T1) + ε·σ·As·(T2⁴ − T1⁴)    ← 与 T2 互导
+                    + α1·Q1                                  ← 加热器 1
+
+      m·Cp·dT2/dt = U·A·(Ta − T2)  + ε·σ·A·(Ta⁴ − T2⁴)
+                    − U·As·(T2 − T1) − ε·σ·As·(T2⁴ − T1⁴)
+                    + α2·Q2
+
+  两项互导写成反对称形式（`± U·As·(T2 − T1)`），耦合项在两式里互相抵消。
+  线性化（σ = ε = 0）后是两热容线性系统：
+      τ·dT1/dt = −U·A·(T1 − Ta) − U·As·(T1 − T2) + α1·Q1，τ = m·Cp/(U·A)
+
+  ── ★ 单位元数据修正（本包相对上游的唯一改动）─────────────────────────
+  上游把 `U` / `As` 的类型单位标成 `W_per_K`（描述写的是「UA (W/K)」），
+  可模型里 `U` 是**按面积**用的（`U·A·(Ta − T1)`，`<parameter>` 自己的描述
+  就写着「U (W/m²·K)」）。于是 `U·A·(Ta−T1)` 的量纲是 W·m²，跟 `α1·Q1`（W）
+  加不到一起，右端与左端 `D(T1)`（K/s）差一个 m² ⇒ `esml simulate` 报两条
+  I27 量纲不符。
+
+  本包把两个类型的单位改成 `W_per_m2_K`（base `W*m^-2*K^-1`），把 σ 的单位
+  改成 `stefan_boltzmann_unit`（base `W*m^-2*K^-4`），于是
+  `U·A·(Ta−T1)` 是 W、与 `α1·Q1` 同量纲，**I27 消失**。
+  方程、参数值、初始条件**一字未动**。
+
+  判据（可复跑，见 README）：
+      esml check   libraries/esml-tclab/src/tclab.comp.esml -L ~/esml-libraries
+      esml simulate libraries/esml-tclab/src/tclab.comp.esml
+          （选项：system=Demo、libroot=~/esml-libraries、tspan=0,600、steps=60）
+  负控：把 `W_per_m2_K` 的 base 改成 `W/K` ⇒ simulate 恰好回两条 I27。
+
+  ── 系统壳（自证 demo，不是标定外壳）─────────────────────────────────
+  `<system name="Demo">` 只为让本包自证可跑（ADR-0014；缺了它 `esml check`
+  会发 I6 告警）。它用的是**通用演示点**，不是 SIL 标定点：
+  标定点（`As=0`、`Q1=10`、显式状态初值）留在引擎侧的
+  `examples/sil-calibration/tclab.esml`——**标定点不进库**，
+  库只放模型语义（理由见 docs/design/sil-library-map.md §4.2 的 J2）。
+  消费方要复现 SIL 轨迹，用 `<use library="cn.ai4energy.esml:esml-tclab:0.1.0"/>`
+  之后覆写 `As` / `eps` / `sigma` / `Q1` 这 4 个 `<set>` 即可（消费方实例取的是
+  modelType 的**声明默认值**，默认 `eps=0.9` / `sigma=5.67e-8` 是非线性默认；
+  `<set>` 是系统局部的，`Demo` 的 `<set>` 不跨系统传播）。
+
+  Demo 取 `eps = sigma = 0`：σ·T⁴ 那一项是刚性的来源
+  （Jacobian 特征值 ∝ 4σT³ ≈ 6.1 W/m²·K），自证 demo 要在任意求解器上
+  都跑得动，故退到线性子集（耦合项保留，`As = 2.0e-4`，两个状态都活着）。
+-->
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1"
+      name="TCLab"
+      description="TCLab 2 加热器 / 2 温度传感器双热容集总热模型（单位修正版）。">
+
+  <use library="cn.ai4energy.esml:esml-units:0.1.0"/>
+  <use library="cn.ai4energy.esml:esml-connectors:0.1.0"/>
+
+  <!-- ============================ L1. units ============================ -->
+  <units name="tclab-units">
+    <unitsBase>
+      <unit name="s"   base="T"  scale="1"   offset="0" description="second"/>
+      <unit name="K"   base="Theta"  scale="1"   offset="0" description="kelvin"/>
+      <unit name="m"   base="L"  scale="1"   offset="0" description="metre"/>
+      <unit name="W"   base="P"  scale="1"   offset="0" description="watt"/>
+    </unitsBase>
+    <unitsDerived>
+      <group name="tclab">
+        <unit name="percent"           base="1"            scale="1" description="% (heater duty)"/>
+        <unit name="W_per_percent"     base="W"            scale="1" description="W per % heater"/>
+        <unit name="W_per_m2_K"        base="W*m^-2*K^-1"  scale="1" description="W/(m²·K) — U per area"/>
+        <unit name="J_per_K"           base="J/K"          scale="1" description="J/K (thermal capacitance m·Cp)"/>
+        <unit name="m2"                base="m^2"          scale="1" description="square metre"/>
+        <unit name="stefan_boltzmann_unit" base="W*m^-2*K^-4" scale="1" description="Stefan-Boltzmann form"/>
+      </group>
+    </unitsDerived>
+  </units>
+
+  <!-- ====================== L2. variable types ====================== -->
+  <variableTypes name="tclab-types">
+    <typesDimensionless discipline="thermal">
+      <!-- States: temperatures -->
+      <type name="temperature"        unit="K"                default="296.15" role="state"
+            lowerBound="200"  upperBound="500"  description="temperature T (K)"/>
+
+      <!-- Inputs: heater duty (0-100%) -->
+      <type name="heater_duty"        unit="percent"          default="0.0"   role="parameter"
+            lowerBound="0"    upperBound="100"  description="heater duty Q (%)"/>
+
+      <!-- Physical parameters -->
+      <type name="heat_xfer_coeff"    unit="W_per_m2_K"       default="0.01"  role="parameter"
+            lowerBound="0.001" upperBound="1.0"  description="U (W/m²·K) — per-area conductance to ambient"/>
+      <type name="coupling_xfer"      unit="W_per_m2_K"       default="0.002" role="parameter"
+            lowerBound="0.0"   upperBound="0.1"   description="U (W/m²·K) — per-area inter-heater conductance"/>
+      <type name="thermal_mass"       unit="J_per_K"          default="2.0"   role="parameter"
+            lowerBound="0.01"  upperBound="100.0" description="m·Cp (J/K) — thermal capacitance"/>
+      <type name="heater_gain1"       unit="W_per_percent"    default="0.010" role="parameter"
+            lowerBound="0"     upperBound="0.1"   description="α1 (W/%) — heater 1 gain"/>
+      <type name="heater_gain2"       unit="W_per_percent"    default="0.0075" role="parameter"
+            lowerBound="0"     upperBound="0.1"   description="α2 (W/%) — heater 2 gain"/>
+      <type name="emissivity"         unit="1"                default="0.9"   role="parameter"
+            lowerBound="0"     upperBound="1.0"   description="ε — surface emissivity"/>
+      <type name="stefan_boltzmann"   unit="stefan_boltzmann_unit" default="5.67e-8" role="parameter"
+            lowerBound="0"     upperBound="1e-6"   description="σ — Stefan-Boltzmann (W/m²·K⁴)"/>
+      <type name="surface_area"       unit="m2"               default="1.0e-3" role="parameter"
+            lowerBound="1e-5"  upperBound="1.0"   description="A (m²) — area to ambient"/>
+      <type name="coupling_area"      unit="m2"               default="2.0e-4" role="parameter"
+            lowerBound="1e-6"  upperBound="1.0"   description="As (m²) — area between heaters"/>
+      <type name="ambient_K"          unit="K"                default="296.15" role="parameter"
+            lowerBound="200"   upperBound="350"   description="Ta (K) — ambient temperature"/>
+    </typesDimensionless>
+  </variableTypes>
+
+  <!-- ========================== L3. model-type ========================== -->
+  <modelTypes name="tclab-models">
+    <!-- 方程逐字沿用上游组件；模型形态（两个状态、两个方程、零代数）不变。
+         D(T1) = dT1/dt —— 状态导数由 `der(...)` 语义给出。 -->
+    <modelType name="TCLab2Lumped"
+                discipline="thermal"
+                description="2-capacitor lumped thermal model — nonlinear (radiative σT⁴)">
+
+      <description>
+        Two thermal nodes T1, T2 coupled by both convective and radiative heat
+        transfer, each losing heat to ambient and receiving power from a heater.
+
+        State form (per node):
+          m·Cp·dT/dt = (UA + εσA·4T̄³)·(Ta − T) + coupling·(T_neighbor − T) + α·Q
+
+        Setting σ = ε = 0 yields the simplified first-order linear form:
+          τ dT1/dt = −UA·(T1 − Ta) − UAs·(T1 − T2) + α1·Q1
+          τ dT2/dt = −UA·(T2 − Ta) − UAs·(T2 − T1) + α2·Q2
+          with τ = m·Cp/(U·A).
+
+        The full nonlinear form is stiff (eigenvalues scale with 4σT³),
+        so IDASolver is recommended for transients; Tsit5 works for moderate
+        inputs and small step sizes.
+
+        U and As are **per-area** coefficients (W/m²·K): the model uses them as
+        `U·A·(Ta − T)` and `U·As·(T2 − T)`, so their unit metadata is
+        `W_per_m2_K` (base `W*m^-2*K^-1`). Carrying `W_per_K` here makes the
+        right-hand side of the energy balance differ in dimension from its
+        left-hand side by one square metre.
+      </description>
+
+      <parameters>
+        <!-- Geometric & material（默认值逐字沿用上游组件；演示点与标定点在 <sets> 里覆盖） -->
+        <parameter name="U"     type="heat_xfer_coeff"  default="10.0"   description="U (W/m²·K)"/>
+        <parameter name="A"     type="surface_area"     default="1.0e-3" description="A (m²) to ambient"/>
+        <parameter name="As"    type="coupling_area"    default="2.0e-4" description="As (m²) between heaters"/>
+        <parameter name="mCp"   type="thermal_mass"     default="2.0"    description="m·Cp (J/K) thermal capacitance"/>
+        <parameter name="alpha1" type="heater_gain1"    default="0.010"  description="α1 (W/%) heater 1"/>
+        <parameter name="alpha2" type="heater_gain2"    default="0.0075" description="α2 (W/%) heater 2"/>
+        <parameter name="eps"   type="emissivity"       default="0.9"    description="emissivity"/>
+        <parameter name="sigma" type="stefan_boltzmann" default="5.67e-8" description="σ (W/m²·K⁴)"/>
+        <parameter name="Ta"    type="ambient_K"        default="296.15" description="Ta (K) ambient"/>
+
+        <!-- Heater inputs (driven by controller / open-loop profile) -->
+        <parameter name="Q1"    type="heater_duty"      default="0.0"    description="heater 1 duty (%)"/>
+        <parameter name="Q2"    type="heater_duty"      default="0.0"    description="heater 2 duty (%)"/>
+      </parameters>
+
+      <variables>
+        <!-- 2 thermal states -->
+        <variable name="T1" type="temperature" initial="296.15" description="temperature at heater 1 (K)"/>
+        <variable name="T2" type="temperature" initial="296.15" description="temperature at heater 2 (K)"/>
+      </variables>
+
+      <equations>
+        <!-- Energy balances (nonlinear, convective + radiative) -->
+        <equation>D(T1) = (U*A*(Ta - T1) + eps*sigma*A*(Ta^4 - T1^4) + U*As*(T2 - T1) + eps*sigma*As*(T2^4 - T1^4) + alpha1*Q1) / mCp</equation>
+        <equation>D(T2) = (U*A*(Ta - T2) + eps*sigma*A*(Ta^4 - T2^4) - U*As*(T2 - T1) - eps*sigma*As*(T2^4 - T1^4) + alpha2*Q2) / mCp</equation>
+      </equations>
+    </modelType>
+  </modelTypes>
+
+  <!-- ========================== L4. systems ========================== -->
+  <systems name="tclab-systems">
+    <!-- 自证 demo（ADR-0014）：单实例、无连接（这株对象没有拓扑，
+         它的耦合是**方程内**的热耦合，不是连线耦合）。
+         取通用演示点，不是 SIL 标定点：标定点留在引擎侧
+         `examples/sil-calibration/tclab.esml`。
+         eps = sigma = 0 关掉刚性辐射项；As = 2.0e-4 保留互导，两个状态都活着。
+         稳态（T1）：T1_ss = Ta + α1·Q1·(m·Cp)/(U·A)
+                        = 296.15 + 0.010·50·2.0/(10.0·1e-3) = 396.15 K
+         时间常数 τ = m·Cp/(U·A) = 2.0/0.01 = 200 s。 -->
+    <system name="Demo">
+      <instances>
+        <instance name="tclab" type="TCLab2Lumped"/>
+      </instances>
+      <sets>
+        <scope instance="tclab">
+          <!-- 几何与材料 -->
+          <set path="U"     value="10.0"/>
+          <set path="A"     value="1.0e-3"/>
+          <set path="As"    value="2.0e-4"/>
+          <set path="mCp"   value="2.0"/>
+          <!-- 加热器增益 -->
+          <set path="alpha1" value="0.010"/>
+          <set path="alpha2" value="0.0075"/>
+          <!-- 辐射项关掉（σ·T⁴ 是刚性的来源；见本文件头） -->
+          <set path="eps"   value="0.0"/>
+          <set path="sigma" value="0.0"/>
+          <!-- 环境温度 -->
+          <set path="Ta"    value="296.15"/>
+          <!-- 加热器指令：Q1 = 50 %，Q2 = 0 -->
+          <set path="Q1"    value="50.0"/>
+          <set path="Q2"    value="0.0"/>
+        </scope>
+      </sets>
+    </system>
+  </systems>
+</esml>

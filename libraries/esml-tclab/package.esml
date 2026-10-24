@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package groupId="cn.ai4energy.esml" artifactId="esml-tclab" version="0.1.0">
+  <namespace>TCLab</namespace>
+  <description>TCLab 双热容集总热模型：2 加热器 + 2 温度传感器（canonical component）。</description>
+  <license>MIT</license>
+  <dependencies>
+    <dependency coordinate="cn.ai4energy.esml:esml-units:0.1.0"/>
+    <dependency coordinate="cn.ai4energy.esml:esml-connectors:0.1.0"/>
+  </dependencies>
+  <exports>
+    <export path="src/tclab.comp.esml"/>
+  </exports>
+</package>
