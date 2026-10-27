@@ -52,5 +52,25 @@
       <parameters><parameter name="U" type="real" default="400.0"/></parameters>
       <equations><equation>pin.v = U</equation></equations>
     </modelType>
+    <!-- 恒功率负荷：吸收 P（与 PVArray 的「负 = 发电」同号约定）。
+         编辑器 Load 组件映射到此（ems-platform ADR-37）。 -->
+    <modelType name="ElectricalLoad" discipline="electrical">
+      <ports><port name="pin" portType="ElectricalPin"/></ports>
+      <parameters><parameter name="P" type="real" default="1000.0"/></parameters>
+      <equations><equation>pin.i * pin.v = P</equation></equations>
+    </modelType>
+    <!-- 接地参考：把节点电位钉在 0，吸收任意电流（悬空系统的参考点）。 -->
+    <modelType name="Ground" discipline="electrical">
+      <ports><port name="pin" portType="ElectricalPin"/></ports>
+      <equations><equation>pin.v = 0.0</equation></equations>
+    </modelType>
+    <!-- 母线汇接点：把任意多个设备的 pin 连到同一个 `p` 上即成一个节点
+         （引擎按端点分组生成 KCL）。母线自身不注入电流 ⇒ `p.i = 0`；
+         没有这条，母线端口电流是自由变量，系统欠定（实测 Pantelides 报
+         `bus.p.i` 未匹配）。编辑器 Bus 组件映射到此（ems-platform ADR-37）。 -->
+    <modelType name="Bus" discipline="electrical">
+      <ports><port name="p" portType="ElectricalPin"/></ports>
+      <equations><equation>p.i = 0.0</equation></equations>
+    </modelType>
   </modelTypes>
 </esml>
