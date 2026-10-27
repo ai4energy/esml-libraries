@@ -17,7 +17,7 @@
       </variables>
       <equations>
         <equation>power.i = P / power.v</equation>
-        <equation>D(SOC) = eta * P / E_cap</equation>
+        <equation>Der(SOC) = eta * P / E_cap</equation>
       </equations>
     </modelType>
     <modelType name="Bus" discipline="electrical">

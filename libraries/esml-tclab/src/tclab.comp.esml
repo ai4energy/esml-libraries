@@ -33,7 +33,7 @@
   上游把 `U` / `As` 的类型单位标成 `W_per_K`（描述写的是「UA (W/K)」），
   可模型里 `U` 是**按面积**用的（`U·A·(Ta − T1)`，`<parameter>` 自己的描述
   就写着「U (W/m²·K)」）。于是 `U·A·(Ta−T1)` 的量纲是 W·m²，跟 `α1·Q1`（W）
-  加不到一起，右端与左端 `D(T1)`（K/s）差一个 m² ⇒ `esml simulate` 报两条
+  加不到一起，右端与左端 `Der(T1)`（K/s）差一个 m² ⇒ `esml simulate` 报两条
   I27 量纲不符。
 
   本包把两个类型的单位改成 `W_per_m2_K`（base `W*m^-2*K^-1`），把 σ 的单位
@@ -127,7 +127,7 @@
   <!-- ========================== L3. model-type ========================== -->
   <modelTypes name="tclab-models">
     <!-- 方程逐字沿用上游组件；模型形态（两个状态、两个方程、零代数）不变。
-         D(T1) = dT1/dt —— 状态导数由 `der(...)` 语义给出。 -->
+         Der(T1) = dT1/dt —— 状态导数由 `der(...)` 语义给出。 -->
     <modelType name="TCLab2Lumped"
                 discipline="thermal"
                 description="2-capacitor lumped thermal model — nonlinear (radiative σT⁴)">
@@ -180,8 +180,8 @@
 
       <equations>
         <!-- Energy balances (nonlinear, convective + radiative) -->
-        <equation>D(T1) = (U*A*(Ta - T1) + eps*sigma*A*(Ta^4 - T1^4) + U*As*(T2 - T1) + eps*sigma*As*(T2^4 - T1^4) + alpha1*Q1) / mCp</equation>
-        <equation>D(T2) = (U*A*(Ta - T2) + eps*sigma*A*(Ta^4 - T2^4) - U*As*(T2 - T1) - eps*sigma*As*(T2^4 - T1^4) + alpha2*Q2) / mCp</equation>
+        <equation>Der(T1) = (U*A*(Ta - T1) + eps*sigma*A*(Ta^4 - T1^4) + U*As*(T2 - T1) + eps*sigma*As*(T2^4 - T1^4) + alpha1*Q1) / mCp</equation>
+        <equation>Der(T2) = (U*A*(Ta - T2) + eps*sigma*A*(Ta^4 - T2^4) - U*As*(T2 - T1) - eps*sigma*As*(T2^4 - T1^4) + alpha2*Q2) / mCp</equation>
       </equations>
     </modelType>
   </modelTypes>

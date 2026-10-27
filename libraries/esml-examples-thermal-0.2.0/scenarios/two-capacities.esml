@@ -12,7 +12,7 @@
       </variables>
       <equations>
         <equation>node.T = T</equation>
-        <equation>C * D(T) = node.Q</equation>
+        <equation>C * Der(T) = node.Q</equation>
       </equations>
     </modelType>
     <modelType name="ThermalResistance" discipline="thermal">

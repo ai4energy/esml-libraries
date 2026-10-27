@@ -18,7 +18,7 @@
       <equations>
         <equation>liquid.p = p0 + rho * 9.80665 * level</equation>
         <equation>liquid.T = 298.15</equation>
-        <equation>D(level) = liquid.m / (rho * A)</equation>
+        <equation>Der(level) = liquid.m / (rho * A)</equation>
       </equations>
     </modelType>
     <modelType name="LinearPipe" discipline="fluid">

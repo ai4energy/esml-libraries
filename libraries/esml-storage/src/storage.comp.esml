@@ -14,7 +14,7 @@
       </parameters>
       <variables><variable name="SOC" type="real" role="state" initial="0.2"/></variables>
       <equations>
-        <equation>D(SOC) = eta_ch * power.i * power.v / E_cap</equation>
+        <equation>Der(SOC) = eta_ch * power.i * power.v / E_cap</equation>
       </equations>
     </modelType>
     <modelType name="ThermalStorage" discipline="storage">
@@ -26,7 +26,7 @@
       </parameters>
       <variables><variable name="T" type="real" role="state" initial="300.0"/></variables>
       <equations>
-        <equation>C * D(T) = heat.Q - UA * (T - T_amb)</equation>
+        <equation>C * Der(T) = heat.Q - UA * (T - T_amb)</equation>
       </equations>
     </modelType>
     <modelType name="HydrogenStore" discipline="storage">
@@ -38,7 +38,7 @@
         <parameter name="LHV" type="real" default="33.3"/>
       </parameters>
       <variables><variable name="m" type="real" role="state" initial="0.0"/></variables>
-      <equations><equation>D(m) = flow.y</equation></equations>
+      <equations><equation>Der(m) = flow.y</equation></equations>
     </modelType>
   </modelTypes>
 </esml>

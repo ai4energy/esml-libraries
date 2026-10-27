@@ -65,7 +65,7 @@
       </parameters>
       <variables><variable name="level" type="real" role="state" initial="0.5"/></variables>
       <equations>
-        <equation>D(level) = liquid.m / (rho * A)</equation>
+        <equation>Der(level) = liquid.m / (rho * A)</equation>
       </equations>
     </modelType>
   </modelTypes>
