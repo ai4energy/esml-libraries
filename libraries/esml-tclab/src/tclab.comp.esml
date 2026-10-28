@@ -97,29 +97,29 @@
             lowerBound="200"  upperBound="500"  description="temperature T (K)"/>
 
       <!-- Inputs: heater duty (0-100%) -->
-      <type name="heater_duty"        unit="percent"          default="0.0"   role="parameter"
+      <type name="heater_duty"        unit="percent"          default="0.0"
             lowerBound="0"    upperBound="100"  description="heater duty Q (%)"/>
 
       <!-- Physical parameters -->
-      <type name="heat_xfer_coeff"    unit="W_per_m2_K"       default="0.01"  role="parameter"
+      <type name="heat_xfer_coeff"    unit="W_per_m2_K"       default="0.01"
             lowerBound="0.001" upperBound="1.0"  description="U (W/m²·K) — per-area conductance to ambient"/>
-      <type name="coupling_xfer"      unit="W_per_m2_K"       default="0.002" role="parameter"
+      <type name="coupling_xfer"      unit="W_per_m2_K"       default="0.002"
             lowerBound="0.0"   upperBound="0.1"   description="U (W/m²·K) — per-area inter-heater conductance"/>
-      <type name="thermal_mass"       unit="J_per_K"          default="2.0"   role="parameter"
+      <type name="thermal_mass"       unit="J_per_K"          default="2.0"
             lowerBound="0.01"  upperBound="100.0" description="m·Cp (J/K) — thermal capacitance"/>
-      <type name="heater_gain1"       unit="W_per_percent"    default="0.010" role="parameter"
+      <type name="heater_gain1"       unit="W_per_percent"    default="0.010"
             lowerBound="0"     upperBound="0.1"   description="α1 (W/%) — heater 1 gain"/>
-      <type name="heater_gain2"       unit="W_per_percent"    default="0.0075" role="parameter"
+      <type name="heater_gain2"       unit="W_per_percent"    default="0.0075"
             lowerBound="0"     upperBound="0.1"   description="α2 (W/%) — heater 2 gain"/>
-      <type name="emissivity"         unit="1"                default="0.9"   role="parameter"
+      <type name="emissivity"         unit="1"                default="0.9"
             lowerBound="0"     upperBound="1.0"   description="ε — surface emissivity"/>
-      <type name="stefan_boltzmann"   unit="stefan_boltzmann_unit" default="5.67e-8" role="parameter"
+      <type name="stefan_boltzmann"   unit="stefan_boltzmann_unit" default="5.67e-8"
             lowerBound="0"     upperBound="1e-6"   description="σ — Stefan-Boltzmann (W/m²·K⁴)"/>
-      <type name="surface_area"       unit="m2"               default="1.0e-3" role="parameter"
+      <type name="surface_area"       unit="m2"               default="1.0e-3"
             lowerBound="1e-5"  upperBound="1.0"   description="A (m²) — area to ambient"/>
-      <type name="coupling_area"      unit="m2"               default="2.0e-4" role="parameter"
+      <type name="coupling_area"      unit="m2"               default="2.0e-4"
             lowerBound="1e-6"  upperBound="1.0"   description="As (m²) — area between heaters"/>
-      <type name="ambient_K"          unit="K"                default="296.15" role="parameter"
+      <type name="ambient_K"          unit="K"                default="296.15"
             lowerBound="200"   upperBound="350"   description="Ta (K) — ambient temperature"/>
     </typesDimensionless>
   </variableTypes>
