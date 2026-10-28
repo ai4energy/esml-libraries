@@ -5,26 +5,26 @@
   <portTypes>
     <portType name="FluidPort">
       <variables>
-        <portVariable name="p" role="potential" type="real"/>
-        <portVariable name="T" role="potential" type="real"/>
-        <portVariable name="m" role="flow" type="real"/>
+        <portVariable name="p" portRole="potential" type="real"/>
+        <portVariable name="T" portRole="potential" type="real"/>
+        <portVariable name="m" portRole="flow" type="real"/>
       </variables>
     </portType>
     <portType name="ThermalPort">
       <variables>
-        <portVariable name="T" role="potential" type="real"/>
-        <portVariable name="Q" role="flow" type="real"/>
+        <portVariable name="T" portRole="potential" type="real"/>
+        <portVariable name="Q" portRole="flow" type="real"/>
       </variables>
     </portType>
     <portType name="ElectricalPin">
       <variables>
-        <portVariable name="v" role="potential" type="real"/>
-        <portVariable name="i" role="flow" type="real"/>
+        <portVariable name="v" portRole="potential" type="real"/>
+        <portVariable name="i" portRole="flow" type="real"/>
       </variables>
     </portType>
     <portType name="SignalPort">
       <variables>
-        <portVariable name="y" role="input" type="real"/>
+        <portVariable name="y" causality="input" type="real"/>
       </variables>
     </portType>
   </portTypes>

@@ -93,7 +93,7 @@
   <variableTypes name="tclab-types">
     <typesDimensionless discipline="thermal">
       <!-- States: temperatures -->
-      <type name="temperature"        unit="K"                default="296.15" role="state"
+      <type name="temperature"        unit="K"                default="296.15"
             lowerBound="200"  upperBound="500"  description="temperature T (K)"/>
 
       <!-- Inputs: heater duty (0-100%) -->
@@ -174,8 +174,8 @@
 
       <variables>
         <!-- 2 thermal states -->
-        <variable name="T1" type="temperature" initial="296.15" description="temperature at heater 1 (K)"/>
-        <variable name="T2" type="temperature" initial="296.15" description="temperature at heater 2 (K)"/>
+        <variable role="state" name="T1" type="temperature" initial="296.15" description="temperature at heater 1 (K)"/>
+        <variable role="state" name="T2" type="temperature" initial="296.15" description="temperature at heater 2 (K)"/>
       </variables>
 
       <equations>
