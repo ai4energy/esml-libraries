@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package groupId="cn.ai4energy.esml" artifactId="esml-compressed-air" version="0.1.0">
+  <namespace>CompressedAir</namespace>
+  <description>压缩空气站/管网：空压机、集管、储气罐、管道、分气包、用气点。</description>
+  <license>MIT</license>
+  <dependencies>
+    <dependency coordinate="cn.ai4energy.esml:esml-units:0.1.0"/>
+  </dependencies>
+  <exports><export path="src/compressed-air.comp.esml"/></exports>
+</package>

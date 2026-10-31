@@ -43,7 +43,7 @@ esml-thermal  →  Thermal
 Thermal.Pipe
 ```
 
-- 官方命名空间是 PascalCase，可单段或点分子段：`Units`、`Connectors`、`Thermal`、`Fluid`、`Electrical`、`Control`、`Storage`、`Renewable`、`Examples`、`Examples.Thermal`。
+- 官方命名空间是 PascalCase，可单段或点分子段：`Units`、`Connectors`、`Thermal`、`Fluid`、`CompressedAir`、`Electrical`、`Control`、`Storage`、`Renewable`、`Examples`、`Examples.Thermal`。
 - 官方保留首段集合：`Units`、`Connectors`、`Thermal`、`Fluid`、`Electrical`、`Control`、`Storage`、`Renewable`、`Examples`。
 - 社区命名空间至少两段（`Com.Example`），首段不得是官方保留集合中的名字。
 - 一个命名空间只能属于一个 `artifactId`；分配记录在 `registry/namespaces.tsv`。

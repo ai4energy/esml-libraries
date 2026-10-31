@@ -1,6 +1,6 @@
 groupId	artifactId	version	namespace	path	repository	commit	sha256	status	license	dependencies	replacement
 cn.ai4energy.esml	esml-units	0.1.0	Units	libraries/esml-units	local	-	6d8038da827c4d856e4f6cf0f92dd59e5ead39e63999a3f4939f81c193b1d576	stable	MIT	-	-
-cn.ai4energy.esml	esml-connectors	0.1.0	Connectors	libraries/esml-connectors	local	-	4c17076fa4867b9958f29b2ca5df052507c4b7dc088f090795078b0639a20d49	stable	MIT	cn.ai4energy.esml:esml-units:0.1.0	-
+cn.ai4energy.esml	esml-connectors	0.1.0	Connectors	libraries/esml-connectors	local	-	96aab717c1c6b9f6640e34594deaee3e3581c9e69fbe6e2675b8802c9cb17245	stable	MIT	cn.ai4energy.esml:esml-units:0.1.0	-
 cn.ai4energy.esml	esml-thermal	0.1.0	Thermal	libraries/esml-thermal	local	-	cecd6c0d6e9e2371935261843c97051c30216ae041df578615f4b7cccc924d91	stable	MIT	cn.ai4energy.esml:esml-units:0.1.0,cn.ai4energy.esml:esml-connectors:0.1.0	-
 cn.ai4energy.esml	esml-examples-thermal	0.1.0	Examples.Thermal	libraries/esml-examples-thermal	local	-	418fc7836fe71c483feb2ed67c4b4ddea58a21f6918cec11316805a3d8cb4c1f	stable	MIT	cn.ai4energy.esml:esml-thermal:0.1.0	-
 cn.ai4energy.esml	esml-properties	0.1.0	Properties	libraries/esml-properties	local	-	31eca98f74a61cb94ef553f19c7b4f5a4d86a21f01c6db7c8093720694bf2b49	stable	MIT	cn.ai4energy.esml:esml-units:0.1.0	-
@@ -20,4 +20,5 @@ cn.ai4energy.esml	esml-examples-electrical	0.1.0	Examples.Electrical	libraries/e
 cn.ai4energy.esml	esml-examples-energy	0.1.0	Examples.Energy	libraries/esml-examples-energy	local	-	c40887481822259049ac9fdda612886c936c22899ba8617a77b7f705760177c1	stable	MIT	cn.ai4energy.esml:esml-units:0.1.0,cn.ai4energy.esml:esml-connectors:0.1.0,cn.ai4energy.esml:esml-electrical:0.1.0,cn.ai4energy.esml:esml-renewable:0.1.0	-
 cn.ai4energy.esml	esml-examples-storage	0.1.0	Examples.Storage	libraries/esml-examples-storage	local	-	63e6b71f9a041ceb61dc233ee1bb1997d512fb1f859183b565d3a232cc212bbe	stable	MIT	cn.ai4energy.esml:esml-units:0.1.0,cn.ai4energy.esml:esml-connectors:0.1.0	-
 cn.ai4energy.esml	esml-examples-chemical	0.1.0	Examples.Chemical	libraries/esml-examples-chemical	local	-	ef17973037a47f7a00b04bb932749fc7380c3fef3019120de6f00f8548652bfb	stable	MIT	cn.ai4energy.esml:esml-units:0.1.0,cn.ai4energy.esml:esml-connectors:0.1.0,cn.ai4energy.esml:esml-chemical:0.1.0	-
-cn.ai4energy.esml	esml-tclab	0.1.0	TCLab	libraries/esml-tclab	local	-	8f77c1048f65a7d0c1ce272638e21191606e78e8ba657bf1a511fca66fd160aa	stable	MIT	cn.ai4energy.esml:esml-units:0.1.0,cn.ai4energy.esml:esml-connectors:0.1.0	-
+cn.ai4energy.esml	esml-tclab	0.1.0	TCLab	libraries/esml-tclab	local	-	876e4e7ade515579a842934ecc9e85617d0bd11ccb1b8e96f156c5a76c201b43	stable	MIT	cn.ai4energy.esml:esml-units:0.1.0,cn.ai4energy.esml:esml-connectors:0.1.0	-
+cn.ai4energy.esml	esml-compressed-air	0.1.0	CompressedAir	libraries/esml-compressed-air	local	-	8b0898ca1e6faf00e422e4d53550d86f45624d479fd345b905a64c193c697e89	experimental	MIT	cn.ai4energy.esml:esml-units:0.1.0	-

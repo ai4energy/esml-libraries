@@ -7,7 +7,7 @@
 
 ## 2. 命名空间
 
-- 官方：`Units`、`Connectors`、`Thermal`、`Fluid`、`Electrical`、`Control`、`Storage`、`Renewable`、`Examples` 及其点分子段（如 `Examples.Thermal`）。
+- 官方：`Units`、`Connectors`、`Thermal`、`Fluid`、`CompressedAir`、`Electrical`、`Control`、`Storage`、`Renewable`、`Examples` 及其点分子段（如 `Examples.Thermal`）。
 - 社区：至少两段，例如 `Com.Example`；首段不得使用官方保留集合中的名字。
 - 命名空间一经分配不回收；包弃用后命名空间仍保留，避免旧文档解析到别的包。
 

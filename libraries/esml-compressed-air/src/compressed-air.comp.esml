@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 压缩空气站/管网组件库（M0 · 与 esml-engine examples/compressed-air-twin
+     的已验证方程逐式一致）。覆盖：离心空压机（压力-流量特性 + 多变功率）、
+     集管、储气罐、沿程阻力管、分气包、直通、固定流量用气点。
+     端口只带 p / m；温度由空压机 T_in 参数与罐温参数给出，暂不进端口
+     （与 DTIL 原型的 p-m 网络层一致）。 -->
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="CompressedAir">
+  <use library="cn.ai4energy.esml:esml-units:0.1.0"/>
+
+  <variableTypes name="compressed-air-types">
+    <type name="pressure" unit="Pa" default="101325.0"/>
+    <type name="mass_flow" unit="kg/s" default="0.0"/>
+    <type name="power" unit="W" default="0.0"/>
+    <type name="temperature" unit="K" default="298.15"/>
+    <type name="cp_air" unit="J/(kg*K)" default="1005.0"/>
+    <type name="heat_ratio" unit="1" default="1.4"/>
+    <type name="gas_constant" unit="J/(kg*K)" default="287.047"/>
+    <type name="volume" unit="m^3" default="30.0"/>
+    <type name="resistance" unit="Pa*s^2/kg^2" default="1.0"/>
+    <type name="ratio" unit="1" default="1.0"/>
+    <type name="eff" unit="1" default="0.85"/>
+  </variableTypes>
+
+  <portTypes name="compressed-air-ports">
+    <portType name="AirPort" connectorFamily="pneumatic">
+      <variables>
+        <portVariable name="p" type="pressure"/>
+        <portVariable name="m" type="mass_flow"/>
+      </variables>
+    </portType>
+  </portTypes>
+
+  <modelTypes name="compressed-air-models">
+    <!-- 离心空压机：出口压力-流量特性 p_out = p_max - b*m^2；
+         功率按多变压缩估算。与 DTIL 原型 AirCompressor 相同。 -->
+    <modelType name="AirCompressor" discipline="energy.compressed-air">
+      <ports><port name="out" portType="AirPort" category="outlet"/></ports>
+      <parameters>
+        <parameter name="p_amb" type="pressure" default="101325.0"/>
+        <parameter name="T_in" type="temperature" default="298.15"/>
+        <parameter name="p_max" type="pressure" default="800000.0"/>
+        <parameter name="b" type="resistance" default="6000.0"/>
+        <parameter name="eta_isen" type="eff" default="0.85"/>
+        <parameter name="eta_pol" type="eff" default="0.88"/>
+        <parameter name="cp" type="cp_air" default="1005.0"/>
+        <parameter name="gamma" type="heat_ratio" default="1.4"/>
+      </parameters>
+      <variables>
+        <variable name="m" type="mass_flow" initial="4.0" role="algebraic"/>
+        <variable name="r" type="ratio" initial="6.4" role="algebraic"/>
+        <variable name="T_out" type="temperature" initial="480.0" role="algebraic"/>
+        <variable name="W" type="power" initial="1.0e6" role="algebraic"/>
+      </variables>
+      <equations>
+        <equation>out.m = m</equation>
+        <equation>m = sqrt((p_max - out.p) / b)</equation>
+        <equation>r = out.p / p_amb</equation>
+        <equation>T_out = T_in * (1.0 + (r^((gamma-1.0)/gamma) - 1.0)/eta_pol)</equation>
+        <equation>W = m * cp * T_in * (r^((gamma-1.0)/gamma) - 1.0) / eta_isen</equation>
+      </equations>
+    </modelType>
+
+    <!-- 三机集管。 -->
+    <modelType name="AirHeader3" discipline="energy.compressed-air">
+      <ports>
+        <port name="a" portType="AirPort" category="inlet"/>
+        <port name="b" portType="AirPort" category="inlet"/>
+        <port name="c" portType="AirPort" category="inlet"/>
+        <port name="out" portType="AirPort" category="outlet"/>
+      </ports>
+      <equations>
+        <equation>out.m = a.m + b.m + c.m</equation>
+        <equation>out.p = a.p</equation>
+        <equation>a.p = b.p</equation>
+        <equation>b.p = c.p</equation>
+      </equations>
+    </modelType>
+
+    <!-- 六机集管。 -->
+    <modelType name="AirHeader6" discipline="energy.compressed-air">
+      <ports>
+        <port name="a" portType="AirPort" category="inlet"/>
+        <port name="b" portType="AirPort" category="inlet"/>
+        <port name="c" portType="AirPort" category="inlet"/>
+        <port name="d" portType="AirPort" category="inlet"/>
+        <port name="e" portType="AirPort" category="inlet"/>
+        <port name="f" portType="AirPort" category="inlet"/>
+        <port name="out" portType="AirPort" category="outlet"/>
+      </ports>
+      <equations>
+        <equation>out.m = a.m + b.m + c.m + d.m + e.m + f.m</equation>
+        <equation>out.p = a.p</equation>
+        <equation>a.p = b.p</equation><equation>b.p = c.p</equation>
+        <equation>c.p = d.p</equation><equation>d.p = e.p</equation>
+        <equation>e.p = f.p</equation>
+      </equations>
+    </modelType>
+
+    <!-- 储气罐：等温压力动力学。 -->
+    <modelType name="ReceiverTank" discipline="energy.compressed-air">
+      <ports>
+        <port name="in" portType="AirPort" category="inlet"/>
+        <port name="out" portType="AirPort" category="outlet"/>
+      </ports>
+      <parameters>
+        <parameter name="V" type="volume" default="30.0"/>
+        <parameter name="T_tank" type="temperature" default="313.15"/>
+        <parameter name="R_gas" type="gas_constant" default="287.047"/>
+      </parameters>
+      <variables>
+        <variable name="p_tank" type="pressure" role="state" initial="700000.0"/>
+      </variables>
+      <equations>
+        <equation>in.p = p_tank</equation>
+        <equation>out.p = p_tank</equation>
+        <equation>Der(p_tank) = (R_gas * T_tank / V) * (in.m - out.m)</equation>
+      </equations>
+    </modelType>
+
+    <!-- 管段：Δp = R·m·|m|；质量守恒。 -->
+    <modelType name="AirPipe" discipline="energy.compressed-air">
+      <ports>
+        <port name="in" portType="AirPort" category="inlet"/>
+        <port name="out" portType="AirPort" category="outlet"/>
+      </ports>
+      <parameters><parameter name="R" type="resistance" default="4000.0"/></parameters>
+      <equations>
+        <equation>in.m = out.m</equation>
+        <equation>in.p - out.p = R * in.m * abs(in.m)</equation>
+      </equations>
+    </modelType>
+
+    <!-- 二支路分气包。 -->
+    <modelType name="AirSplitter2" discipline="energy.compressed-air">
+      <ports>
+        <port name="a" portType="AirPort" category="inlet"/>
+        <port name="b" portType="AirPort" category="outlet"/>
+        <port name="c" portType="AirPort" category="outlet"/>
+      </ports>
+      <equations>
+        <equation>a.m = b.m + c.m</equation>
+        <equation>a.p = b.p</equation><equation>b.p = c.p</equation>
+      </equations>
+    </modelType>
+
+    <!-- 三支路分气包。 -->
+    <modelType name="AirSplitter3" discipline="energy.compressed-air">
+      <ports>
+        <port name="a" portType="AirPort" category="inlet"/>
+        <port name="b" portType="AirPort" category="outlet"/>
+        <port name="c" portType="AirPort" category="outlet"/>
+        <port name="d" portType="AirPort" category="outlet"/>
+      </ports>
+      <equations>
+        <equation>a.m = b.m + c.m + d.m</equation>
+        <equation>a.p = b.p</equation><equation>b.p = c.p</equation>
+        <equation>c.p = d.p</equation>
+      </equations>
+    </modelType>
+
+    <!-- 四支路分气包。 -->
+    <modelType name="AirSplitter4" discipline="energy.compressed-air">
+      <ports>
+        <port name="a" portType="AirPort" category="inlet"/>
+        <port name="b" portType="AirPort" category="outlet"/>
+        <port name="c" portType="AirPort" category="outlet"/>
+        <port name="d" portType="AirPort" category="outlet"/>
+        <port name="e" portType="AirPort" category="outlet"/>
+      </ports>
+      <equations>
+        <equation>a.m = b.m + c.m + d.m + e.m</equation>
+        <equation>a.p = b.p</equation><equation>b.p = c.p</equation>
+        <equation>c.p = d.p</equation><equation>d.p = e.p</equation>
+      </equations>
+    </modelType>
+
+    <!-- 直通：一进一出。 -->
+    <modelType name="AirPass" discipline="energy.compressed-air">
+      <ports>
+        <port name="a" portType="AirPort" category="inlet"/>
+        <port name="b" portType="AirPort" category="outlet"/>
+      </ports>
+      <equations>
+        <equation>a.m = b.m</equation>
+        <equation>a.p = b.p</equation>
+      </equations>
+    </modelType>
+
+    <!-- 用气点：固定质量流量。 -->
+    <modelType name="AirDemand" discipline="energy.compressed-air">
+      <ports><port name="in" portType="AirPort" category="inlet"/></ports>
+      <parameters><parameter name="demand" type="mass_flow" default="4.0"/></parameters>
+      <equations><equation>in.m = demand</equation></equations>
+    </modelType>
+  </modelTypes>
+</esml>

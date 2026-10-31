@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 用 esml-compressed-air 库重搭 DTIL 原型的三机网络：
+     3 台空压机 -> 集管 -> 储气罐 -> 主分管 -> 三分气包 -> 3 个用气点。
+     参数与 esml-engine/examples/compressed-air-twin/sys_compressed_air_twin.esml
+     相同；库组件只带 p/m，cp/γ/R 走参数默认值。 -->
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="CompressedAirThreeMachine">
+  <use library="cn.ai4energy.esml:esml-compressed-air:0.1.0"/>
+
+  <systems>
+    <system name="S">
+      <instances>
+        <instance name="C1" type="AirCompressor"/>
+        <instance name="C2" type="AirCompressor"/>
+        <instance name="C3" type="AirCompressor"/>
+        <instance name="H"  type="AirHeader3"/>
+        <instance name="T"  type="ReceiverTank"/>
+        <instance name="P0" type="AirPipe"/>
+        <instance name="J"  type="AirSplitter3"/>
+        <instance name="P1" type="AirPipe"/>
+        <instance name="P2" type="AirPipe"/>
+        <instance name="P3" type="AirPipe"/>
+        <instance name="D1" type="AirDemand"/>
+        <instance name="D2" type="AirDemand"/>
+        <instance name="D3" type="AirDemand"/>
+      </instances>
+      <connections>
+        <connection from="C1.out" to="H.a"/>
+        <connection from="C2.out" to="H.b"/>
+        <connection from="C3.out" to="H.c"/>
+        <connection from="H.out" to="T.in"/>
+        <connection from="T.out" to="P0.in"/>
+        <connection from="P0.out" to="J.a"/>
+        <connection from="J.b" to="P1.in"/>
+        <connection from="P1.out" to="D1.in"/>
+        <connection from="J.c" to="P2.in"/>
+        <connection from="P2.out" to="D2.in"/>
+        <connection from="J.d" to="P3.in"/>
+        <connection from="P3.out" to="D3.in"/>
+      </connections>
+      <sets>
+        <scope instance="C1"><set path="b" value="7407.0"/></scope>
+        <scope instance="C2"><set path="b" value="7407.0"/></scope>
+        <scope instance="C3"><set path="b" value="16667.0"/></scope>
+        <scope instance="P0"><set path="R" value="400.0"/></scope>
+        <scope instance="P1"><set path="R" value="1600.0"/></scope>
+        <scope instance="P2"><set path="R" value="2500.0"/></scope>
+        <scope instance="P3"><set path="R" value="4444.0"/></scope>
+        <scope instance="D1"><set path="demand" value="5.0"/></scope>
+        <scope instance="D2"><set path="demand" value="4.0"/></scope>
+        <scope instance="D3"><set path="demand" value="3.0"/></scope>
+      </sets>
+      <schedule><sequence><continueFor time="600"/></sequence></schedule>
+    </system>
+  </systems>
+</esml>

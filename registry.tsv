@@ -20,3 +20,4 @@ cn.ai4energy.esml:esml-examples-energy:0.1.0	libraries/esml-examples-energy/scen
 cn.ai4energy.esml:esml-examples-storage:0.1.0	libraries/esml-examples-storage/scenarios/battery-charge.esml
 cn.ai4energy.esml:esml-examples-chemical:0.1.0	libraries/esml-examples-chemical/scenarios/cstr.esml
 cn.ai4energy.esml:esml-tclab:0.1.0	libraries/esml-tclab/src/tclab.comp.esml
+cn.ai4energy.esml:esml-compressed-air:0.1.0	libraries/esml-compressed-air/src/compressed-air.comp.esml

@@ -59,6 +59,7 @@ esml-connectors    端口类型（流体、热、电、信号）
     ↑
 esml-thermal       换热、储热、热工设备
 esml-fluid         泵、阀、管、压缩机、透平
+esml-compressed-air 空压机、集管、储气罐、压缩空气管网
 esml-electrical    母线、线路、电机、负荷
 esml-control       PID、限幅、延时、信号
 esml-storage       电池、储热、储氢
