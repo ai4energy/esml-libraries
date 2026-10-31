@@ -39,6 +39,14 @@ esml solve libraries/esml-compressed-air/scenarios/three-machine.esml \
 的 67 未知数/2.980 MW 相比，差异来自应用层用 `cp_air`/`gamma_air` 物性函数
 覆盖了库参数（+0.5%）；网络方程和端口约定相同。
 
+场景还带一个 `tank_dyn` 仿真任务；EMS 总线请求带
+`"libroots": ["/app/bin/esml-libraries"]` 时可直接解析本坐标：
+
+```text
+compute.simulation.task → status 200 · 51 点 · 单位 95/95
+储气罐 700000 → 650005 Pa
+```
+
 ## 边界
 
 - 本库是压力-流量层；负荷分配、MPC、空气物性不属于库组件，分别在

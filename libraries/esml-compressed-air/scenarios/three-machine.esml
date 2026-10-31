@@ -52,4 +52,11 @@
       <schedule><sequence><continueFor time="600"/></sequence></schedule>
     </system>
   </systems>
+
+  <computeTasks name="ca-tasks" target="S">
+    <task name="tank_dyn" kind="simulate">
+      <tspan from="0" to="600"/>
+      <solver name="Tsit5" steps="50"/>
+    </task>
+  </computeTasks>
 </esml>
