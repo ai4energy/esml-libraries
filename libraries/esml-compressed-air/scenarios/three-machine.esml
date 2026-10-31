@@ -38,9 +38,9 @@
         <connection from="P3.out" to="D3.in"/>
       </connections>
       <sets>
-        <scope instance="C1"><set path="b" value="7407.0"/></scope>
-        <scope instance="C2"><set path="b" value="7407.0"/></scope>
-        <scope instance="C3"><set path="b" value="16667.0"/></scope>
+        <scope instance="C1"><set path="b" value="7407.0"/><set path="p_max" value="800000.0"/></scope>
+        <scope instance="C2"><set path="b" value="7407.0"/><set path="p_max" value="800000.0"/></scope>
+        <scope instance="C3"><set path="b" value="16667.0"/><set path="p_max" value="800000.0"/></scope>
         <scope instance="P0"><set path="R" value="400.0"/></scope>
         <scope instance="P1"><set path="R" value="1600.0"/></scope>
         <scope instance="P2"><set path="R" value="2500.0"/></scope>
@@ -48,6 +48,7 @@
         <scope instance="D1"><set path="demand" value="5.0"/></scope>
         <scope instance="D2"><set path="demand" value="4.0"/></scope>
         <scope instance="D3"><set path="demand" value="3.0"/></scope>
+        <scope instance="T"><set path="V" value="30.0"/></scope>
       </sets>
       <schedule><sequence><continueFor time="600"/></sequence></schedule>
     </system>
