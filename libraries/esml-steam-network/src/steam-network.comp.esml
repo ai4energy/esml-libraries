@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 蒸汽管网组件库（0.1.0，experimental）。
+     饱和母管 + 三支路（Darcy/IF97）、管损凝结、PRV 等焓节流。
+     属性函数走 esml-mmprops：Tsat_water / hg_water / hf_water /
+     rho_water / h_water。场景需带 <units> 块。 -->
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="SteamNetwork">
+  <use library="cn.ai4energy.esml:esml-units:0.1.0"/>
+  <variableTypes>
+    <type name="Pressure" unit="Pa" default="0.0"/>
+    <type name="Temperature" unit="K" default="0.0"/>
+    <type name="Density" unit="kg/m^3" default="0.0"/>
+    <type name="Velocity" unit="m/s" default="0.0"/>
+    <type name="MassFlow" unit="kg/s" default="0.0"/>
+    <type name="SpecificEnthalpy" unit="J/kg" default="0.0"/>
+    <type name="Power" unit="W" default="0.0"/>
+    <type name="Length" unit="m" default="0.0"/>
+    <type name="Dimensionless" unit="1" default="0.0"/>
+    <type name="Conductance" unit="W/K" default="0.0"/>
+  </variableTypes>
+  <modelTypes>
+    <modelType name="SteamHeader3">
+      <parameters>
+        <parameter name="p_h" type="Pressure" default="4000000.0"/>
+        <parameter name="dT_vap" type="Temperature" default="0.5"/>
+        <parameter name="m1" type="MassFlow" default="2.0"/>
+        <parameter name="m2" type="MassFlow" default="3.0"/>
+        <parameter name="m3" type="MassFlow" default="1.0"/>
+        <parameter name="D1" type="Length" default="0.15"/>
+        <parameter name="D2" type="Length" default="0.12"/>
+        <parameter name="D3" type="Length" default="0.08"/>
+        <parameter name="LD1" type="Dimensionless" default="1000.0"/>
+        <parameter name="LD2" type="Dimensionless" default="1200.0"/>
+        <parameter name="LD3" type="Dimensionless" default="800.0"/>
+        <parameter name="f1" type="Dimensionless" default="0.02"/>
+        <parameter name="f2" type="Dimensionless" default="0.02"/>
+        <parameter name="f3" type="Dimensionless" default="0.02"/>
+      </parameters>
+      <variables>
+        <variable name="T_h" type="Temperature" initial="523.5"/>
+        <variable name="h_h" type="SpecificEnthalpy" initial="2800897.0"/>
+        <variable name="p1" type="Pressure" initial="3990000.0"/>
+        <variable name="T1" type="Temperature" initial="523.4"/>
+        <variable name="rho1" type="Density" initial="20.0"/>
+        <variable name="v1" type="Velocity" initial="5.7"/>
+        <variable name="Q1" type="Power" initial="3400000.0"/>
+        <variable name="p2" type="Pressure" initial="3988000.0"/>
+        <variable name="T2" type="Temperature" initial="523.3"/>
+        <variable name="rho2" type="Density" initial="20.0"/>
+        <variable name="v2" type="Velocity" initial="13.3"/>
+        <variable name="Q2" type="Power" initial="5100000.0"/>
+        <variable name="p3" type="Pressure" initial="3985000.0"/>
+        <variable name="T3" type="Temperature" initial="523.2"/>
+        <variable name="rho3" type="Density" initial="20.0"/>
+        <variable name="v3" type="Velocity" initial="10.0"/>
+        <variable name="Q3" type="Power" initial="1700000.0"/>
+        <variable name="m_h" type="MassFlow" initial="6.0"/>
+        <variable name="Q_total" type="Power" initial="10200000.0"/>
+      </variables>
+      <equations>
+        <equation>T_h = Tsat_water(p_h)</equation>
+        <equation>h_h = hg_water(T_h)</equation>
+        <equation>T1 = Tsat_water(p1)</equation>
+        <equation>rho1 = rho_water(T1 + dT_vap, p1)</equation>
+        <equation>v1 = m1/(rho1*pi*D1^2/4)</equation>
+        <equation>p_h - p1 = f1*LD1*rho1*v1^2/2</equation>
+        <equation>Q1 = m1*(h_h - hf_water(T1))</equation>
+        <equation>T2 = Tsat_water(p2)</equation>
+        <equation>rho2 = rho_water(T2 + dT_vap, p2)</equation>
+        <equation>v2 = m2/(rho2*pi*D2^2/4)</equation>
+        <equation>p_h - p2 = f2*LD2*rho2*v2^2/2</equation>
+        <equation>Q2 = m2*(h_h - hf_water(T2))</equation>
+        <equation>T3 = Tsat_water(p3)</equation>
+        <equation>rho3 = rho_water(T3 + dT_vap, p3)</equation>
+        <equation>v3 = m3/(rho3*pi*D3^2/4)</equation>
+        <equation>p_h - p3 = f3*LD3*rho3*v3^2/2</equation>
+        <equation>Q3 = m3*(h_h - hf_water(T3))</equation>
+        <equation>m_h = m1 + m2 + m3</equation>
+        <equation>Q_total = Q1 + Q2 + Q3</equation>
+      </equations>
+    </modelType>
+    <modelType name="SteamHeader3Loss">
+      <parameters>
+        <parameter name="p_h" type="Pressure" default="4000000.0"/>
+        <parameter name="dT_vap" type="Temperature" default="0.5"/>
+        <parameter name="m1" type="MassFlow" default="2.0"/>
+        <parameter name="m2" type="MassFlow" default="3.0"/>
+        <parameter name="m3" type="MassFlow" default="1.0"/>
+        <parameter name="D1" type="Length" default="0.15"/>
+        <parameter name="D2" type="Length" default="0.12"/>
+        <parameter name="D3" type="Length" default="0.08"/>
+        <parameter name="LD1" type="Dimensionless" default="1000.0"/>
+        <parameter name="LD2" type="Dimensionless" default="1200.0"/>
+        <parameter name="LD3" type="Dimensionless" default="800.0"/>
+        <parameter name="f1" type="Dimensionless" default="0.02"/>
+        <parameter name="f2" type="Dimensionless" default="0.02"/>
+        <parameter name="f3" type="Dimensionless" default="0.02"/>
+        <parameter name="T_amb" type="Temperature" default="293.15"/>
+        <parameter name="UA1" type="Conductance" default="200.0"/>
+        <parameter name="UA2" type="Conductance" default="300.0"/>
+        <parameter name="UA3" type="Conductance" default="100.0"/>
+      </parameters>
+      <variables>
+        <variable name="T_h" type="Temperature" initial="523.5"/>
+        <variable name="h_h" type="SpecificEnthalpy" initial="2800897.0"/>
+        <variable name="p1" type="Pressure" initial="3990000.0"/>
+        <variable name="T1" type="Temperature" initial="523.4"/>
+        <variable name="rho1" type="Density" initial="20.0"/>
+        <variable name="v1" type="Velocity" initial="5.7"/>
+        <variable name="Q1" type="Power" initial="3400000.0"/>
+        <variable name="p2" type="Pressure" initial="3988000.0"/>
+        <variable name="T2" type="Temperature" initial="523.3"/>
+        <variable name="rho2" type="Density" initial="20.0"/>
+        <variable name="v2" type="Velocity" initial="13.3"/>
+        <variable name="Q2" type="Power" initial="5100000.0"/>
+        <variable name="p3" type="Pressure" initial="3985000.0"/>
+        <variable name="T3" type="Temperature" initial="523.2"/>
+        <variable name="rho3" type="Density" initial="20.0"/>
+        <variable name="v3" type="Velocity" initial="10.0"/>
+        <variable name="Q3" type="Power" initial="1700000.0"/>
+        <variable name="Q_loss1" type="Power" initial="46000.0"/>
+        <variable name="x_cond1" type="Dimensionless" initial="0.0135"/>
+        <variable name="Q_net1" type="Power" initial="3354000.0"/>
+        <variable name="Q_loss2" type="Power" initial="69000.0"/>
+        <variable name="x_cond2" type="Dimensionless" initial="0.0135"/>
+        <variable name="Q_net2" type="Power" initial="5031000.0"/>
+        <variable name="Q_loss3" type="Power" initial="23000.0"/>
+        <variable name="x_cond3" type="Dimensionless" initial="0.0135"/>
+        <variable name="Q_net3" type="Power" initial="1677000.0"/>
+        <variable name="Q_loss_total" type="Power" initial="138000.0"/>
+        <variable name="Q_net_total" type="Power" initial="10062000.0"/>
+        <variable name="m_h" type="MassFlow" initial="6.0"/>
+        <variable name="Q_total" type="Power" initial="10200000.0"/>
+      </variables>
+      <equations>
+        <equation>T_h = Tsat_water(p_h)</equation>
+        <equation>h_h = hg_water(T_h)</equation>
+        <equation>T1 = Tsat_water(p1)</equation>
+        <equation>rho1 = rho_water(T1 + dT_vap, p1)</equation>
+        <equation>v1 = m1/(rho1*pi*D1^2/4)</equation>
+        <equation>p_h - p1 = f1*LD1*rho1*v1^2/2</equation>
+        <equation>Q1 = m1*(h_h - hf_water(T1))</equation>
+        <equation>Q_loss1 = UA1*(T1 - T_amb)</equation>
+        <equation>x_cond1 = Q_loss1/(m1*(hg_water(T1) - hf_water(T1)))</equation>
+        <equation>Q_net1 = Q1 - Q_loss1</equation>
+        <equation>T2 = Tsat_water(p2)</equation>
+        <equation>rho2 = rho_water(T2 + dT_vap, p2)</equation>
+        <equation>v2 = m2/(rho2*pi*D2^2/4)</equation>
+        <equation>p_h - p2 = f2*LD2*rho2*v2^2/2</equation>
+        <equation>Q2 = m2*(h_h - hf_water(T2))</equation>
+        <equation>Q_loss2 = UA2*(T2 - T_amb)</equation>
+        <equation>x_cond2 = Q_loss2/(m2*(hg_water(T2) - hf_water(T2)))</equation>
+        <equation>Q_net2 = Q2 - Q_loss2</equation>
+        <equation>T3 = Tsat_water(p3)</equation>
+        <equation>rho3 = rho_water(T3 + dT_vap, p3)</equation>
+        <equation>v3 = m3/(rho3*pi*D3^2/4)</equation>
+        <equation>p_h - p3 = f3*LD3*rho3*v3^2/2</equation>
+        <equation>Q3 = m3*(h_h - hf_water(T3))</equation>
+        <equation>Q_loss3 = UA3*(T3 - T_amb)</equation>
+        <equation>x_cond3 = Q_loss3/(m3*(hg_water(T3) - hf_water(T3)))</equation>
+        <equation>Q_net3 = Q3 - Q_loss3</equation>
+        <equation>m_h = m1 + m2 + m3</equation>
+        <equation>Q_total = Q1 + Q2 + Q3</equation>
+        <equation>Q_loss_total = Q_loss1 + Q_loss2 + Q_loss3</equation>
+        <equation>Q_net_total = Q_net1 + Q_net2 + Q_net3</equation>
+      </equations>
+    </modelType>
+    <modelType name="SteamPRV">
+      <parameters>
+        <parameter name="p_h" type="Pressure" default="4000000.0"/>
+        <parameter name="p_set" type="Pressure" default="1000000.0"/>
+        <parameter name="m" type="MassFlow" default="2.0"/>
+        <parameter name="D" type="Length" default="0.15"/>
+        <parameter name="LD" type="Dimensionless" default="500.0"/>
+        <parameter name="f" type="Dimensionless" default="0.02"/>
+        <parameter name="dT_super" type="Temperature" default="9.0579"/>
+      </parameters>
+      <variables>
+        <variable name="T_h" type="Temperature" initial="523.5"/>
+        <variable name="h_h" type="SpecificEnthalpy" initial="2800897.0"/>
+        <variable name="p_v" type="Pressure" initial="1000000.0"/>
+        <variable name="h_v" type="SpecificEnthalpy" initial="2800897.0"/>
+        <variable name="T_v" type="Temperature" initial="462.1"/>
+        <variable name="rho_v" type="Density" initial="4.9"/>
+        <variable name="v" type="Velocity" initial="23.0"/>
+        <variable name="p_u" type="Pressure" initial="987000.0"/>
+        <variable name="T_sat_u" type="Temperature" initial="452.8"/>
+        <variable name="dh_throttle" type="SpecificEnthalpy" initial="0.0"/>
+        <variable name="Q_u" type="Power" initial="4040000.0"/>
+      </variables>
+      <equations>
+        <equation>T_h = Tsat_water(p_h)</equation>
+        <equation>h_h = hg_water(T_h)</equation>
+        <equation>p_v = p_set</equation>
+        <equation>T_v = Tsat_water(p_v) + dT_super</equation>
+        <equation>h_v = h_water(T_v, p_v)</equation>
+        <equation>dh_throttle = h_h - h_v</equation>
+        <equation>rho_v = rho_water(T_v, p_v)</equation>
+        <equation>v = m/(rho_v*pi*D^2/4)</equation>
+        <equation>p_v - p_u = f*LD*rho_v*v^2/2</equation>
+        <equation>T_sat_u = Tsat_water(p_u)</equation>
+        <equation>Q_u = m*(h_v - hf_water(T_sat_u))</equation>
+      </equations>
+    </modelType>
+  </modelTypes>
+</esml>

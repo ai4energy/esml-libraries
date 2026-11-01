@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 热泵/暖通组件库（0.1.0，experimental）。
+
+     R134aCycle：蒸气压缩稳态循环，属性函数走 esml-mmprops 的
+       psat_R134a / hg_R134a / h_v_R134a / T_sat_R134a / hf_R134a。
+       T2 是排气温度参数（默认 T_cond+25 K），避免在求解器里做 h(T,p)
+       反解；eta_s 在应用层用 T_isentropic_R134a 后处理。
+
+     HouseHP：建筑单热容 + COP 二次拟合 + 部分负荷修正。COP 系数来自
+       examples/heat-pump-twin/hp_map.csv 的 3×3 数据（R²=0.99976，
+       温度用 K）。它不含属性函数，可直接用于 control 任务的快速 rollout。
+
+     单位：变量/参数显式声明为 Pa/K/J/kg/W/kg/s，场景需带 <units> 块。
+-->
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="HeatPump">
+  <use library="cn.ai4energy.esml:esml-units:0.1.0"/>
+
+  <variableTypes>
+    <type name="Pressure" unit="Pa" default="0.0"/>
+    <type name="Temperature" unit="K" default="0.0"/>
+    <type name="SpecificEnthalpy" unit="J/kg" default="0.0"/>
+    <type name="Power" unit="W" default="0.0"/>
+    <type name="MassFlow" unit="kg/s" default="0.0"/>
+    <type name="Conductance" unit="W/K" default="0.0"/>
+    <type name="HeatCapacity" unit="J/K" default="0.0"/>
+    <type name="Dimensionless" unit="1" default="0.0"/>
+    <type name="InvK" unit="1/K" default="0.0"/>
+    <type name="InvK2" unit="1/K^2" default="0.0"/>
+  </variableTypes>
+
+  <modelTypes>
+    <modelType name="R134aCycle">
+      <parameters>
+        <parameter name="T_evap" type="Temperature" default="263.15"/>
+        <parameter name="T_cond" type="Temperature" default="318.15"/>
+        <parameter name="T2" type="Temperature" default="343.15"/>
+        <parameter name="Q_load" type="Power" default="5000.0"/>
+      </parameters>
+      <variables>
+        <variable name="p_evap" type="Pressure" initial="200603.3"/>
+        <variable name="h1" type="SpecificEnthalpy" initial="392664.9"/>
+        <variable name="p_cond" type="Pressure" initial="1159924.2"/>
+        <variable name="h2" type="SpecificEnthalpy" initial="449427.9"/>
+        <variable name="T3" type="Temperature" initial="318.15"/>
+        <variable name="h3" type="SpecificEnthalpy" initial="263942.9"/>
+        <variable name="h4" type="SpecificEnthalpy" initial="263942.9"/>
+        <variable name="Q_cond" type="Power" initial="5000.0"/>
+        <variable name="m_dot" type="MassFlow" initial="0.0269564"/>
+        <variable name="W" type="Power" initial="1530.12"/>
+        <variable name="Q_evap" type="Power" initial="3469.88"/>
+        <variable name="COP" type="Dimensionless" initial="3.26771"/>
+      </variables>
+      <equations>
+        <equation>p_evap = psat_R134a(T_evap)</equation>
+        <equation>h1 = hg_R134a(T_evap)</equation>
+        <equation>p_cond = psat_R134a(T_cond)</equation>
+        <equation>h2 = h_v_R134a(T2, p_cond)</equation>
+        <equation>T3 = T_sat_R134a(p_cond)</equation>
+        <equation>h3 = hf_R134a(T3)</equation>
+        <equation>h4 = h3</equation>
+        <equation>Q_cond = m_dot*(h2 - h3)</equation>
+        <equation>Q_cond = Q_load</equation>
+        <equation>W = m_dot*(h2 - h1)</equation>
+        <equation>Q_evap = m_dot*(h1 - h4)</equation>
+        <equation>COP = Q_cond/W</equation>
+      </equations>
+    </modelType>
+
+    <modelType name="HouseHP">
+      <parameters>
+        <parameter name="c0" type="Dimensionless" default="12.225663234329062"/>
+        <parameter name="c1" type="InvK" default="0.14988538890518857"/>
+        <parameter name="c2" type="InvK" default="-0.15874907134192637"/>
+        <parameter name="c3" type="InvK2" default="0.0003414252334601126"/>
+        <parameter name="c4" type="InvK2" default="0.0005502890842441532"/>
+        <parameter name="c5" type="InvK2" default="-0.0009225689856769719"/>
+        <parameter name="T_out" type="Temperature" default="268.15"/>
+        <parameter name="T_supply" type="Temperature" default="318.15"/>
+        <parameter name="dT_evap" type="Temperature" default="5.0"/>
+        <parameter name="dT_cond" type="Temperature" default="5.0"/>
+        <parameter name="Q_rated" type="Power" default="8000.0"/>
+        <parameter name="UA" type="Conductance" default="250.0"/>
+        <parameter name="C_room" type="HeatCapacity" default="8000000.0"/>
+        <parameter name="plr_gain" type="Dimensionless" default="0.1"/>
+        <parameter name="PLR" type="Dimensionless" default="0.8"/>
+      </parameters>
+      <variables>
+        <variable name="Te" type="Temperature" initial="263.15"/>
+        <variable name="Tc" type="Temperature" initial="323.15"/>
+        <variable name="COP_full" type="Dimensionless" initial="2.95"/>
+        <variable name="COP" type="Dimensionless" initial="2.98"/>
+        <variable name="Q_hp" type="Power" initial="6400.0"/>
+        <variable name="W" type="Power" initial="2148.0"/>
+        <variable name="T_room" type="Temperature" role="state" initial="291.15"/>
+      </variables>
+      <equations>
+        <equation>Te = T_out - dT_evap</equation>
+        <equation>Tc = T_supply + dT_cond</equation>
+        <equation>COP_full = c0 + c1*Te + c2*Tc + c3*Te^2 + c4*Tc^2 + c5*Te*Tc</equation>
+        <equation>COP = COP_full*(1.0 + plr_gain*(1.0 - PLR))</equation>
+        <equation>Q_hp = PLR*Q_rated</equation>
+        <equation>W = Q_hp/COP</equation>
+        <equation>Der(T_room) = (Q_hp - UA*(T_room - T_out))/C_room</equation>
+      </equations>
+    </modelType>
+  </modelTypes>
+</esml>

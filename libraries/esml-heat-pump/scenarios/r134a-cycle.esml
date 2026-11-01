@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!-- R134a 蒸气压缩热泵 · 稳态供热循环
+     1 蒸发器出口饱和蒸气（T_evap）
+     2s 等熵压缩到 p_cond；2 实测/给定的排气温度 T2
+     3 冷凝器出口饱和液（T_cond）
+     4 节流后（h4 = h3）
+     与 R32 版不同：这里用 T2 参数（排气温度可测），避免在求解器里做
+     h(T,p) 反解。eta_s 由 sweep_hp.py 用 T_isentropic_R134a 后处理，
+     不进这个稳态循环的方程。
+     属性函数：psat/hg/sg/T_isentropic/h_v/T_sat/hf 均来自 esml-mmprops。
+     运行前设 ESML_PROPS_LIB=.../libesml_mmprops_ffi.so。 -->
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="R134aHeatPumpCycle">
+  <use library="cn.ai4energy.esml:esml-heat-pump:0.1.0"/>
+  <units name="hp-units">
+    <unitsBase>
+      <unit name="K" base="Theta" scale="1" offset="0"/>
+      <unit name="W" base="W" scale="1" offset="0"/>
+      <unit name="J" base="J" scale="1" offset="0"/>
+      <unit name="kg" base="M" scale="1" offset="0"/>
+      <unit name="m" base="L" scale="1" offset="0"/>
+      <unit name="s" base="T" scale="1" offset="0"/>
+    </unitsBase>
+  </units>
+  <systems>
+    <system name="HP"><instances><instance name="c" type="R134aCycle"/></instances></system>
+  </systems>
+</esml>

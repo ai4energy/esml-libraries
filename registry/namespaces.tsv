@@ -22,3 +22,5 @@ Examples.Chemical	cn.ai4energy.esml	esml-examples-chemical	reserved
 TCLab	cn.ai4energy.esml	esml-tclab	reserved
 CompressedAir	cn.ai4energy.esml	esml-compressed-air	reserved
 WaterNetwork	cn.ai4energy.esml	esml-water-network	reserved
+HeatPump	cn.ai4energy.esml	esml-heat-pump	reserved
+SteamNetwork	cn.ai4energy.esml	esml-steam-network	reserved

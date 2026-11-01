@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!-- 热泵 + 建筑热区 · 降阶 MPC
+     热泵 COP 由 hp_map.csv 的 3×3 数据拟合（R²=0.99976，K 为单位）：
+       COP_full = c0 + c1·Te + c2·Tc + c3·Te² + c4·Tc² + c5·Te·Tc
+       Te = T_out − dT_evap，Tc = T_supply + dT_cond
+     部分负荷修正：COP = COP_full·(1 + plr_gain·(1 − PLR))（合成修正，
+     没有部分负荷实验数据，只用于控制层演示）。
+     建筑：C_room·dT_room/dt = Q_hp − UA·(T_room − T_out)
+     MPC 操纵 PLR，保持 T_room = 293.15 K（20 °C）。
+     这是降阶控制模型；全属性循环见 r134a_cycle.esml。 -->
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="HeatPumpBuildingMPC">
+  <use library="cn.ai4energy.esml:esml-heat-pump:0.1.0"/>
+  <units name="hp-units">
+    <unitsBase>
+      <unit name="K" base="Theta" scale="1" offset="0"/>
+      <unit name="W" base="P" scale="1" offset="0"/>
+      <unit name="J" base="J" scale="1" offset="0"/>
+      <unit name="kg" base="M" scale="1" offset="0"/>
+      <unit name="m" base="L" scale="1" offset="0"/>
+      <unit name="s" base="T" scale="1" offset="0"/>
+    </unitsBase>
+  </units>
+  <systems>
+    <system name="HP">
+      <instances><instance name="h" type="HouseHP"/></instances>
+      <schedule><sequence><continueFor time="86400"/></sequence></schedule>
+    </system>
+    <system name="HP_cold">
+      <instances><instance name="h" type="HouseHP"/></instances>
+      <sets><scope instance="h"><set path="T_out" value="258.15"/></scope></sets>
+      <schedule><sequence><continueFor time="86400"/></sequence></schedule>
+    </system>
+  </systems>
+  <computeTasks name="hp-tasks" target="HP">
+    <task name="mpc" kind="control">
+      <tspan from="0" to="86400"/>
+      <mpc N="4" dt="3600"/>
+      <estimate name="h.PLR" initial="0.8"/>
+      <controlVars><var name="h.PLR"/></controlVars>
+      <decision name="h.PLR" lower="0.1" upper="1.0"/>
+      <controlled var="h.T_room" setpoint="293.15" tolerance="0.2"/>
+    </task>
+    <task name="mpc_cold" kind="control" target="HP_cold">
+      <tspan from="0" to="86400"/>
+      <mpc N="4" dt="3600"/>
+      <estimate name="h.PLR" initial="0.8"/>
+      <controlVars><var name="h.PLR"/></controlVars>
+      <decision name="h.PLR" lower="0.1" upper="1.0"/>
+      <controlled var="h.T_room" setpoint="293.15" tolerance="0.2"/>
+    </task>
+  </computeTasks>
+</esml>

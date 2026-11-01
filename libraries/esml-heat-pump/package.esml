@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package groupId="cn.ai4energy.esml" artifactId="esml-heat-pump" version="0.1.0">
+  <namespace>HeatPump</namespace>
+  <description>热泵/暖通：R134a 稳态循环与建筑降阶热区控制器。</description>
+  <license>MIT</license>
+  <dependencies>
+    <dependency coordinate="cn.ai4energy.esml:esml-units:0.1.0"/>
+  </dependencies>
+  <exports><export path="src/heat-pump.comp.esml"/></exports>
+</package>

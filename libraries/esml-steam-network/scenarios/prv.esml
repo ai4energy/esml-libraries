@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="SteamPRV">
+  <use library="cn.ai4energy.esml:esml-steam-network:0.1.0"/>
+  <units name="steam-units">
+    <unitsBase>
+      <unit name="K" base="Theta" scale="1" offset="0"/>
+      <unit name="Pa" base="Pa" scale="1" offset="0"/>
+      <unit name="J" base="J" scale="1" offset="0"/>
+      <unit name="kg" base="M" scale="1" offset="0"/>
+      <unit name="m" base="L" scale="1" offset="0"/>
+      <unit name="s" base="T" scale="1" offset="0"/>
+    </unitsBase>
+  </units>
+
+  <systems><system name="S"><instances><instance name="v" type="SteamPRV"/></instances></system></systems>
+</esml>

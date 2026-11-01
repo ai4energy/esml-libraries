@@ -23,3 +23,5 @@ cn.ai4energy.esml	esml-examples-chemical	0.1.0	Examples.Chemical	libraries/esml-
 cn.ai4energy.esml	esml-tclab	0.1.0	TCLab	libraries/esml-tclab	local	-	876e4e7ade515579a842934ecc9e85617d0bd11ccb1b8e96f156c5a76c201b43	stable	MIT	cn.ai4energy.esml:esml-units:0.1.0,cn.ai4energy.esml:esml-connectors:0.1.0	-
 cn.ai4energy.esml	esml-compressed-air	0.1.0	CompressedAir	libraries/esml-compressed-air	local	-	655872e2606c2a715cf933be5ff123740b1faece798eacf15a69d706b4a70742	experimental	MIT	cn.ai4energy.esml:esml-units:0.1.0	-
 cn.ai4energy.esml	esml-water-network	0.1.0	WaterNetwork	libraries/esml-water-network	local	-	f66c8af2b4bb53a905825db3484ef0a7bced4e3aa97211252eb691dfecf55bfe	experimental	MIT	cn.ai4energy.esml:esml-units:0.1.0	-
+cn.ai4energy.esml	esml-heat-pump	0.1.0	HeatPump	libraries/esml-heat-pump	local	-	13a53b0c56be52e3a3f20d798d4fa9122606eee3eb06bf026d7d3659fa09ab0b	experimental	MIT	cn.ai4energy.esml:esml-units:0.1.0	-
+cn.ai4energy.esml	esml-steam-network	0.1.0	SteamNetwork	libraries/esml-steam-network	local	-	0214d89ce3a0ee63430a73afb619db9d98a1c58ac1498f04a37a07cc6e2f6516	experimental	MIT	cn.ai4energy.esml:esml-units:0.1.0	-
