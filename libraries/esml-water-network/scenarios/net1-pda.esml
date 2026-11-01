@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<!-- Author: Mingtao Li <mingtao@xjtu.edu.cn> -->
+<!-- License: teaching use = MIT · commercial use = proprietary (see LICENSE.md) -->
+<!-- 由 tools/inp2esml.py 从 EPANET .inp 转换（单位 GPM → SI）。
+     稳态口径：水池取 `elevation + init level` 的定水头（EPANET t=0 报的正是它）。 -->
+<!-- 水 DTIL · Net1 泵速/储罐平衡原型
+     - 拓扑与参数逐字来自 examples/epanet/08-wntr/01-net1.sys.esml（EPANET Net1）；
+     - u9 从 Pump 换成 PumpSpeed（仿射律 H = u²·H0 − k·Q|Q|），Cmd 是本地
+       SpeedCommand，只给转速信号；
+     - t2 仍是稳态定水头视图（Reservoir），不是 TankDyn：t2.p.Q 正 = 进罐，
+       负 = 出罐。24 h 准稳态轨迹见 daily_tank.py，本文件不积分水位；
+     - 对拍：examples/water-twin/sweep_pump.py 加 inp 参数（<Net1.inp>）。 -->
+<!-- 水 DTIL · Net1 泵出口 PRV 压力层
+     - 在 u9 与 j10 之间加 PRVCheck（正流 PRV，防止泵倒流）；
+     - t2 仍是定水头 Reservoir；PRV 只压泵出口压力，罐头仍是压力地板；
+     - H_set 扫参见 sweep_prv.py。 -->
+<!-- 水 DTIL · Net1 泵供分区 + 分布漏损
+     - 去掉 t2/p110（定水头罐），只由泵供水；PRVCheck 在泵出口；
+     - j10..j32 全部 LeakJunction：Q = base + k*ifelse(P>0, P^0.5, 0)；
+       k=1e-4 每点，基线漏损约 12%（合成值，不是现场标定）；
+     - 用 ifelse 而不是 max：max 会降成无单位的 __mncp_arg_*，单位覆盖不全；
+     - 扫参见 sweep_leak.py；这是压力管理收益场景，需水基荷仍固定。 -->
+<!-- 水 DTIL · Net1 泵供分区 + PDA 售水 + 分布漏损
+     - 在 net1_pumped_leak.esml 基础上把 LeakJunction 换成 PDALeakJunction；
+     - 售水基荷按压力折算：P<=Pmin 为 0，P>=Preq 为 1，
+       中间 ((P-Pmin)/(Preq-Pmin))^n_exp；Pmin=5 m，Preq=30 m，n_exp=0.5；
+     - 漏损仍是 k*ifelse(P>0, P^0.5, 0)，k=1e-4 每点；
+     - 这是“泵电-漏损-未满足需求”的权衡场景，扫参见 sweep_pda.py。 -->
+<esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="Net1PDA">
+  <use library="cn.ai4energy.esml:esml-water-network:0.1.0"/>
+  <systems><system name="Net1">
+      <instances>
+        <instance name="j10" type="PDALeakJunction"/>
+        <instance name="j11" type="PDALeakJunction"/>
+        <instance name="j12" type="PDALeakJunction"/>
+        <instance name="j13" type="PDALeakJunction"/>
+        <instance name="j21" type="PDALeakJunction"/>
+        <instance name="j22" type="PDALeakJunction"/>
+        <instance name="j23" type="PDALeakJunction"/>
+        <instance name="j31" type="PDALeakJunction"/>
+        <instance name="j32" type="PDALeakJunction"/>
+        <instance name="r9" type="Reservoir"/>
+                <instance name="p10" type="Pipe"/>
+        <instance name="p11" type="Pipe"/>
+        <instance name="p12" type="Pipe"/>
+        <instance name="p21" type="Pipe"/>
+        <instance name="p22" type="Pipe"/>
+        <instance name="p31" type="Pipe"/>
+                <instance name="p111" type="Pipe"/>
+        <instance name="p112" type="Pipe"/>
+        <instance name="p113" type="Pipe"/>
+        <instance name="p121" type="Pipe"/>
+        <instance name="p122" type="Pipe"/>
+        <instance name="u9" type="PumpSpeed"/>
+        <instance name="Cmd" type="SpeedCommand"/>
+        <instance name="prv9" type="PRVCheck"/>
+      </instances>
+      <connections>
+        <connection from="j10.p" to="p10.a"/>
+        <connection from="p10.b" to="j11.p"/>
+        <connection from="j11.p" to="p11.a"/>
+        <connection from="p11.b" to="j12.p"/>
+        <connection from="j12.p" to="p12.a"/>
+        <connection from="p12.b" to="j13.p"/>
+        <connection from="j21.p" to="p21.a"/>
+        <connection from="p21.b" to="j22.p"/>
+        <connection from="j22.p" to="p22.a"/>
+        <connection from="p22.b" to="j23.p"/>
+        <connection from="j31.p" to="p31.a"/>
+        <connection from="p31.b" to="j32.p"/>
+                        <connection from="j11.p" to="p111.a"/>
+        <connection from="p111.b" to="j21.p"/>
+        <connection from="j12.p" to="p112.a"/>
+        <connection from="p112.b" to="j22.p"/>
+        <connection from="j13.p" to="p113.a"/>
+        <connection from="p113.b" to="j23.p"/>
+        <connection from="j21.p" to="p121.a"/>
+        <connection from="p121.b" to="j31.p"/>
+        <connection from="j22.p" to="p122.a"/>
+        <connection from="p122.b" to="j32.p"/>
+        <connection from="r9.p" to="u9.a"/>
+        <connection from="u9.b" to="prv9.a"/>
+        <connection from="prv9.b" to="j10.p"/>
+        <connection from="Cmd.Out" to="u9.SpeedIn"/>
+      </connections>
+      <sets>
+        <scope instance="r9"><set path="total_head" value="243.84"/></scope>
+        <scope instance="j10"><set path="base_demand" value="0.0"/><set path="elevation" value="216.408"/><set path="leak_coeff" value="0.0001"/></scope>
+        <scope instance="j11"><set path="base_demand" value="0.00946353"/><set path="elevation" value="216.408"/><set path="leak_coeff" value="0.0001"/></scope>
+        <scope instance="j12"><set path="base_demand" value="0.00946353"/><set path="elevation" value="213.36"/><set path="leak_coeff" value="0.0001"/></scope>
+        <scope instance="j13"><set path="base_demand" value="0.006309019999999999"/><set path="elevation" value="211.836"/><set path="leak_coeff" value="0.0001"/></scope>
+        <scope instance="j21"><set path="base_demand" value="0.00946353"/><set path="elevation" value="213.36"/><set path="leak_coeff" value="0.0001"/></scope>
+        <scope instance="j22"><set path="base_demand" value="0.012618039999999999"/><set path="elevation" value="211.836"/><set path="leak_coeff" value="0.0001"/></scope>
+        <scope instance="j23"><set path="base_demand" value="0.00946353"/><set path="elevation" value="210.312"/><set path="leak_coeff" value="0.0001"/></scope>
+        <scope instance="j31"><set path="base_demand" value="0.006309019999999999"/><set path="elevation" value="213.36"/><set path="leak_coeff" value="0.0001"/></scope>
+        <scope instance="j32"><set path="base_demand" value="0.006309019999999999"/><set path="elevation" value="216.408"/><set path="leak_coeff" value="0.0001"/></scope>
+        <scope instance="p10"><set path="length" value="3209.5440000000003"/><set path="diameter" value="0.4572"/><set path="C_hw" value="100.0"/></scope>
+        <scope instance="p11"><set path="length" value="1609.344"/><set path="diameter" value="0.35559999999999997"/><set path="C_hw" value="100.0"/></scope>
+        <scope instance="p12"><set path="length" value="1609.344"/><set path="diameter" value="0.254"/><set path="C_hw" value="100.0"/></scope>
+        <scope instance="p21"><set path="length" value="1609.344"/><set path="diameter" value="0.254"/><set path="C_hw" value="100.0"/></scope>
+        <scope instance="p22"><set path="length" value="1609.344"/><set path="diameter" value="0.30479999999999996"/><set path="C_hw" value="100.0"/></scope>
+        <scope instance="p31"><set path="length" value="1609.344"/><set path="diameter" value="0.15239999999999998"/><set path="C_hw" value="100.0"/></scope>
+        <scope instance="p111"><set path="length" value="1609.344"/><set path="diameter" value="0.254"/><set path="C_hw" value="100.0"/></scope>
+        <scope instance="p112"><set path="length" value="1609.344"/><set path="diameter" value="0.30479999999999996"/><set path="C_hw" value="100.0"/></scope>
+        <scope instance="p113"><set path="length" value="1609.344"/><set path="diameter" value="0.2032"/><set path="C_hw" value="100.0"/></scope>
+        <scope instance="p121"><set path="length" value="1609.344"/><set path="diameter" value="0.2032"/><set path="C_hw" value="100.0"/></scope>
+        <scope instance="p122"><set path="length" value="1609.344"/><set path="diameter" value="0.15239999999999998"/><set path="C_hw" value="100.0"/></scope>
+        <scope instance="u9"><set path="H0" value="101.6"/><set path="k" value="2836.1382050961074"/></scope>
+        <scope instance="prv9"><set path="H_set" value="306.12"/></scope>
+        <scope instance="Cmd"><set path="speed" value="1.0"/></scope>
+      </sets>
+  </system></systems>
+</esml>
