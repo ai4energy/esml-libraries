@@ -12,7 +12,7 @@
     </unitsBase>
   </units>
 
-  <systems><system name="S"><instances><instance name="g" type="SteamHeader3Loss"/></instances></system></systems>
+  <systems><system name="S"><instances><instance name="g" type="SteamHeader3Loss"/></instances><sets><scope instance="g"><set path="p_h" value="4000000.0"/><set path="m1" value="2.0"/><set path="m2" value="3.0"/><set path="m3" value="1.0"/><set path="D1" value="0.15"/><set path="D2" value="0.12"/><set path="D3" value="0.08"/></scope></sets></system></systems>
   <computeTasks name="steam-tasks" target="S">
     <task name="steady" kind="simulate">
       <tspan from="0" to="1"/>

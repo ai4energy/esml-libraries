@@ -39,9 +39,10 @@ esml solve libraries/esml-water-network/scenarios/net1-pda.esml -L . --full
 
 ## 边界
 
-- **单位**：与引擎水网库一致，`H/Q` 声明为 `unit=1`（无量纲），数值按 SI
-  使用（m、m³/s）；应用层用 EPANET 标高另算压力（m）。不要把 `unit=1`
-  当物理单位；要发布训练集，先补 `Head`/`FlowRate` 类型。
+- **单位**：`H` 为 m、`Q` 为 m³/s；`length/diameter` 为 m，`C_hw` 无量纲，
+  `PumpK` 为 s²/m⁵，`LeakCoeff` 为 m^2.5/s。场景带 `<units>` 块，
+  实测单位覆盖 **74/74**。引擎里旧的 `hydraulic:water-network` 仍是
+  `unit=1`；本发布坐标已 typed，二者不要混用。
 - 本库只覆盖 DTIL 子集，不含 Tank/TankDyn、FCV/PSV/TCV、泵曲线族；
   这些仍在 `esml-engine/library/domains/hydraulic/water_network.comp.esml`。
 - `PRVCheck` 的互补式方程是分段/非光滑的；扫参时建议先扫描再二分，

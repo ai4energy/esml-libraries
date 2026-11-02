@@ -5,9 +5,9 @@
      的 DTIL 子集，按 esml-libraries 坐标重新发布；方程与端口语义逐字保留，
      只去掉应用层不需要的 Tank/TankDyn/FCV/PSV/TCV/泵曲线族。
 
-     单位：与引擎水网库一致，H/Q 声明为 unit=1（无量纲）。这是**有意**的：
-     引擎水网库的水头/流量单位层还没完成，库内先按“数值即 SI”使用；
-     应用层用 EPANET 标高另算压力（m）。不要把 unit=1 当成物理单位。
+     单位：H 为 m、Q 为 m³/s；管道长度/直径为 m，C_hw 无量纲，
+     PumpSpeed 的 k 为 s²/m⁵，漏损系数为 m^2.5/s。与引擎里 unit=1 的
+     旧水网库不同，这个发布坐标是单位完备的；场景仍需带 <units> 块。
 
      端口：
        Hydraulic     H potential / Q flow
@@ -15,23 +15,30 @@
        SpeedOutput   v output（转速指令源）
 -->
 <esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="WaterNetwork">
+  <use library="cn.ai4energy.esml:esml-units:0.1.0"/>
 
   <variableTypes name="water-types">
-    <type name="real" unit="1" default="0.0"/>
+    <type name="Head" unit="m" default="0.0"/>
+    <type name="FlowRate" unit="m^3/s" default="0.0"/>
+    <type name="Length" unit="m" default="0.0"/>
+    <type name="Area" unit="m^2" default="0.0"/>
+    <type name="PumpK" unit="s^2/m^5" default="0.0"/>
+    <type name="LeakCoeff" unit="m^2.5/s" default="0.0"/>
+    <type name="Dimensionless" unit="1" default="0.0"/>
   </variableTypes>
 
   <portTypes name="water-ports">
     <portType name="Hydraulic" connectorFamily="hydraulic">
       <variables>
-        <portVariable name="H" portRole="potential" type="real"/>
-        <portVariable name="Q" portRole="flow" type="real"/>
+        <portVariable name="H" portRole="potential" type="Head"/>
+        <portVariable name="Q" portRole="flow" type="FlowRate"/>
       </variables>
     </portType>
     <portType name="SpeedInput" connectorFamily="signal">
-      <variables><portVariable name="v" causality="input" type="real" default="1.0"/></variables>
+      <variables><portVariable name="v" causality="input" type="Dimensionless" default="1.0"/></variables>
     </portType>
     <portType name="SpeedOutput" connectorFamily="signal">
-      <variables><portVariable name="v" causality="output" type="real"/></variables>
+      <variables><portVariable name="v" causality="output" type="Dimensionless"/></variables>
     </portType>
   </portTypes>
 
@@ -39,14 +46,14 @@
     <!-- 定水头源/汇。 -->
     <modelType name="Reservoir">
       <ports><port name="p" portType="Hydraulic"/></ports>
-      <parameters><parameter name="total_head" type="real" default="100.0"/></parameters>
+      <parameters><parameter name="total_head" type="Head" default="100.0"/></parameters>
       <equations><equation>p.H = total_head</equation></equations>
     </modelType>
 
     <!-- 需求驱动结点：p.Q 为正表示从管网取水。 -->
     <modelType name="Junction">
       <ports><port name="p" portType="Hydraulic"/></ports>
-      <parameters><parameter name="base_demand" type="real" default="0.0"/></parameters>
+      <parameters><parameter name="base_demand" type="FlowRate" default="0.0"/></parameters>
       <equations><equation>p.Q = base_demand</equation></equations>
     </modelType>
 
@@ -55,9 +62,9 @@
     <modelType name="Pipe">
       <ports><port name="a" portType="Hydraulic"/><port name="b" portType="Hydraulic"/></ports>
       <parameters>
-        <parameter name="length" type="real" default="100.0"/>
-        <parameter name="diameter" type="real" default="0.3"/>
-        <parameter name="C_hw" type="real" default="100.0"/>
+        <parameter name="length" type="Length" default="100.0"/>
+        <parameter name="diameter" type="Length" default="0.3"/>
+        <parameter name="C_hw" type="Dimensionless" default="100.0"/>
       </parameters>
       <equations>
         <equation>a.H - b.H = 10.67 * length * a.Q * (a.Q * a.Q + 1e-18)^0.426 / (C_hw^1.852 * diameter^4.87)</equation>
@@ -74,8 +81,8 @@
         <port name="SpeedIn" portType="SpeedInput"/>
       </ports>
       <parameters>
-        <parameter name="H0" type="real" default="50.0"/>
-        <parameter name="k" type="real" default="0.05"/>
+        <parameter name="H0" type="Head" default="50.0"/>
+        <parameter name="k" type="PumpK" default="0.05"/>
       </parameters>
       <equations>
         <equation>a.H + (SpeedIn.v^2 * H0 - k * a.Q * (a.Q * a.Q + 1e-18)^0.5) - b.H = 0.0</equation>
@@ -86,7 +93,7 @@
     <!-- 转速指令源：Out.v = speed。 -->
     <modelType name="SpeedCommand">
       <ports><port name="Out" portType="SpeedOutput"/></ports>
-      <parameters><parameter name="speed" type="real" default="1.0"/></parameters>
+      <parameters><parameter name="speed" type="Dimensionless" default="1.0"/></parameters>
       <equations><equation>Out.v = speed</equation></equations>
     </modelType>
 
@@ -99,7 +106,7 @@
          适合泵出口/罐出口等必须禁止倒流的位置。 -->
     <modelType name="PRVCheck">
       <ports><port name="a" portType="Hydraulic"/><port name="b" portType="Hydraulic"/></ports>
-      <parameters><parameter name="H_set" type="real" default="0.0"/></parameters>
+      <parameters><parameter name="H_set" type="Head" default="0.0"/></parameters>
       <equations>
         <equation>ifelse(a.Q &lt; 0.0, a.Q, ifelse(b.H &gt; a.H, a.Q, ifelse(a.H &gt; H_set, b.H - H_set, b.H - a.H))) = 0.0</equation>
         <equation>a.Q + b.Q = 0.0</equation>
@@ -112,10 +119,10 @@
     <modelType name="LeakJunction">
       <ports><port name="p" portType="Hydraulic"/></ports>
       <parameters>
-        <parameter name="base_demand" type="real" default="0.0"/>
-        <parameter name="elevation" type="real" default="0.0"/>
-        <parameter name="leak_coeff" type="real" default="0.0"/>
-        <parameter name="leak_exp" type="real" default="0.5"/>
+        <parameter name="base_demand" type="FlowRate" default="0.0"/>
+        <parameter name="elevation" type="Head" default="0.0"/>
+        <parameter name="leak_coeff" type="LeakCoeff" default="0.0"/>
+        <parameter name="leak_exp" type="Dimensionless" default="0.5"/>
       </parameters>
       <equations>
         <equation>p.Q = base_demand + leak_coeff * ifelse(p.H &gt; elevation, (p.H - elevation)^leak_exp, 0.0)</equation>
@@ -127,13 +134,13 @@
     <modelType name="PDALeakJunction">
       <ports><port name="p" portType="Hydraulic"/></ports>
       <parameters>
-        <parameter name="base_demand" type="real" default="0.0"/>
-        <parameter name="elevation" type="real" default="0.0"/>
-        <parameter name="Pmin" type="real" default="5.0"/>
-        <parameter name="Preq" type="real" default="30.0"/>
-        <parameter name="n_exp" type="real" default="0.5"/>
-        <parameter name="leak_coeff" type="real" default="0.0"/>
-        <parameter name="leak_exp" type="real" default="0.5"/>
+        <parameter name="base_demand" type="FlowRate" default="0.0"/>
+        <parameter name="elevation" type="Head" default="0.0"/>
+        <parameter name="Pmin" type="Head" default="5.0"/>
+        <parameter name="Preq" type="Head" default="30.0"/>
+        <parameter name="n_exp" type="Dimensionless" default="0.5"/>
+        <parameter name="leak_coeff" type="LeakCoeff" default="0.0"/>
+        <parameter name="leak_exp" type="Dimensionless" default="0.5"/>
       </parameters>
       <equations>
         <equation>p.Q = base_demand * ifelse(p.H - elevation &lt;= Pmin, 0.0, ifelse(p.H - elevation &gt;= Preq, 1.0, ((p.H - elevation - Pmin) / (Preq - Pmin))^n_exp)) + leak_coeff * ifelse(p.H &gt; elevation, (p.H - elevation)^leak_exp, 0.0)</equation>

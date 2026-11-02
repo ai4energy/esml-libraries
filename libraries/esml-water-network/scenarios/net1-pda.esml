@@ -27,6 +27,13 @@
      - 漏损仍是 k*ifelse(P>0, P^0.5, 0)，k=1e-4 每点；
      - 这是“泵电-漏损-未满足需求”的权衡场景，扫参见 sweep_pda.py。 -->
 <esml xmlns="https://www.ai4energy.cn/esml/v1" schema="esml/v1" name="Net1PDA">
+  <units name="water-units">
+    <unitsBase>
+      <unit name="m" base="m" scale="1" offset="0"/>
+      <unit name="s" base="s" scale="1" offset="0"/>
+    </unitsBase>
+  </units>
+
   <use library="cn.ai4energy.esml:esml-water-network:0.1.0"/>
   <systems><system name="Net1">
       <instances>
